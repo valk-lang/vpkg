@@ -1,0 +1,49 @@
+
+fn main(args: Array[String]) {
+
+    args.remove_index(0)
+    let action = args.get(0) ! { help(0) }
+
+    print("Args: ")
+    each args as arg, i {
+        if i > 0 : print(", ")
+        print(arg)
+    }
+    print("\n")
+}
+
+fn help(code: i32) $exit {
+    println("------------------------------")
+    println(" Valk Package Manager " + #STR(VERSION))
+    println("------------------------------")
+    print("\n")
+
+    println("📦 Package commands");
+    print("\n")
+    println(" vpkg install         Install pacakages defined in the valk.json config");
+    println(" vpkg install {pkg}   Install pacakage globally");
+    println(" vpkg remove {pkg}    Remove pacakage");
+
+    print("\n")
+    println("💿 Valk version control");
+    println("");
+    println(" vpkg use 0.0.1       Install valk version 0.0.1");
+    println(" vpkg use latest      Install latest version");
+    println(" vpkg use             Install valk version defined in project valk.json");
+    println("                      Expected config: { \"valk-version\": \"0.0.1\" }");
+
+    print("\n")
+    println("🔗 Toolchain commands");
+    print("\n")
+    println(" vpkg toolchain get {target}");
+
+    print("\n")
+    println("⚙️ Other");
+    print("\n")
+    println(" vpkg --help / -h");
+    println(" vpkg --version / -v");
+
+    print("\n")
+
+    exit(code)
+}
