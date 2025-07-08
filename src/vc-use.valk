@@ -1,0 +1,7 @@
+
+fn vc_use(version: String, args: Array[String]) {
+    let vv = get_versions()
+    println("Vpkg current: " + vv.vpkg_current)
+    println("Vpkg latest: " + vv.vpkg_latest)
+    println("Valk latest: " + (vv.valk ?? "/"))
+}

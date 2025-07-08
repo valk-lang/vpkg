@@ -1,0 +1,46 @@
+
+use valk:json
+use valk:fs
+use valk:time
+
+class Versions {
+    vpkg_latest: String
+    vpkg_current: String
+    valk: ?String
+}
+
+fn get_versions() Versions {
+    let cd = cache_dir()
+    let path = cd + "/vpkg.json"
+    let data = fs:read(path) !? "{}"
+    let conf = json:decode(data) !? json:new_object()
+
+    let vpkg_latest = conf.get("valk-latest").string()
+    let valk_latest : ?String = conf.get("vpkg-latest").string()
+    let last_update = conf.get("last-update").int().to(uint)
+
+    if vpkg_latest.empty() : vpkg_latest = #STR(VERSION)
+    if valk_latest.empty() : valk_latest = null
+
+    let now = time:microtime()
+    let one_day : uint = 1000 * 1000 * 60 * 60 * 24
+    if now - last_update > one_day {
+        api_get_versions() -> res {
+            if res.has("vpkg") && res.has("valk") {
+                vpkg_latest = res.get("vpkg").string()
+                valk_latest = res.get("valk").string()
+
+                conf.set("vpkg-latest", res.get("vpkg"))
+                conf.set("valk-latest", res.get("valk"))
+                conf.set("last-update", json:new_int(now.to(int)))
+                fs:write(path, conf.encode(true)) _
+            }
+        }
+    }
+
+    return Versions {
+        vpkg_latest: vpkg_latest
+        vpkg_current: #STR(VERSION)
+        valk: valk_latest
+    }
+}

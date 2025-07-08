@@ -1,0 +1,11 @@
+
+use valk:fs
+
+fn cache_dir() String {
+    let home = fs:home_dir() !? "~"
+    let cache_dir = home + "/.valk"
+    if !fs:is_dir(cache_dir) : fs:mkdir(cache_dir) ! error("Failed to create cache directory: " + cache_dir)
+    cache_dir += "/vpkg"
+    if !fs:is_dir(cache_dir) : fs:mkdir(cache_dir) ! error("Failed to create cache directory: " + cache_dir)
+    return cache_dir
+}

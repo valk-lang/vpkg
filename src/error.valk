@@ -1,0 +1,5 @@
+
+fn error(msg: String) $exit {
+    println("")
+    exit(1)
+}

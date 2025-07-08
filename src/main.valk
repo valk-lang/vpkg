@@ -2,14 +2,17 @@
 fn main(args: Array[String]) {
 
     args.remove_index(0)
-    let action = args.get(0) ! { help(0) }
+    let action = args.get(0) ! help(0)
+    args.remove_index(0)
 
-    print("Args: ")
-    each args as arg, i {
-        if i > 0 : print(", ")
-        print(arg)
+    if action == "use" {
+        let version = args.get(0) ! help(1)
+        args.remove_index(0)
+        vc_use(version, args)
+    } else {
+        println("Unknown action: '" + action + "'")
+        exit(1)
     }
-    print("\n")
 }
 
 fn help(code: i32) $exit {
