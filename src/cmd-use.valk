@@ -33,7 +33,7 @@ fn cmd_use(args: Array[String], options: Array[String]) {
 
     if version == "latest" {
         let valk_latest = vv.valk
-        if !isset(valk_latest) : error("❌ Vpkg was unable to find out what the latest valk version is")
+        if !isset(valk_latest) : error("❌ vpkg was unable to find out what the latest valk version is")
         version = valk_latest
     }
 
@@ -43,11 +43,14 @@ fn cmd_use(args: Array[String], options: Array[String]) {
 
     println("# Use version: " + version)
 
-    if is_installed(version, args) {
+    if is_installed(version, args) && false {
         println("# Version is already installed")
         link_version(version_dir(version, args))
         return
     }
+
+    // Download version
+    download_version(version)
 
     // println("Vpkg current: " + vv.vpkg_current)
     // println("Vpkg latest: " + vv.vpkg_latest)

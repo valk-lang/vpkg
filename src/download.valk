@@ -1,0 +1,39 @@
+
+use valk:http
+
+fn cdn_host() String {
+    return "https://cdn.valk-lang.dev"
+}
+
+fn get_os() String {
+    #if OS == win
+    return "win"
+    #elif OS == linux
+    return "linux"
+    #elif OS == macos
+    return "macos"
+    #end
+}
+
+fn get_arch() String {
+    #if ARCH == x64
+    return "x64"
+    #elif ARCH == arm64
+    return "arm64"
+    #end
+}
+
+fn download_version(v: String) {
+    let url = host() + "/api/download/url/" + get_os() + "/" + get_arch() + "/" + v
+    let resp = http:request("GET", url) ! error("❌ Failed to fetch download URL from: " + url)
+    if resp.status != 200 : error("❌ Invalid response from: " + url)
+    url = resp.body
+    println("# Downloading : " + url)
+
+    let client = http:client("GET", url)
+    let req = client.request() ! {
+        println("ERR: " + EMSG)
+        if E == E.invalid_url : error("❌ Invalid URL: " + url)
+        error("❌ Failed to download: " + url)
+    }
+}

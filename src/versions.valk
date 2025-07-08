@@ -50,7 +50,7 @@ fn check_vpkg_versions(vv: Versions) {
         println("# There is a new vpkg version available: " + vv.vpkg_latest)
         println("# Update command: vpkg self-update")
     } else {
-        println("# Vpkg is " + "up-to-date".ansi.green())
+        println("# vpkg is " + "up-to-date".ansi.green())
     }
 }
 
