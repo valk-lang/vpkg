@@ -1,0 +1,8 @@
+
+fn help_intro_pkg_commands() {
+    println("📦 Package commands");
+    print("\n")
+    println(" vpkg install         Install pacakages defined in the valk.json config");
+    println(" vpkg install {pkg}   Install pacakage");
+    println(" vpkg remove {pkg}    Remove pacakage");
+}

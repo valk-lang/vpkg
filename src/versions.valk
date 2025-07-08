@@ -53,3 +53,23 @@ fn check_vpkg_versions(vv: Versions) {
         println("# Vpkg is " + "up-to-date".ansi.green())
     }
 }
+
+fn get_version_from_config() String {
+    let path = fs:cwd() + div() + "valk.json"
+
+    let data = fs:read(path) ! error("❌ No config found: " + path)
+
+    let json = json:decode(data) ! error("❌ Invalid json in: " + path)
+    let version = json.get("valk-version").string()
+    if version.empty() : error("❌ No version specified in: " + path)
+    return version
+}
+
+fn is_valid_version(v: String) bool {
+    let parts = v.split(".")
+    if parts.length != 3 : return false
+    each parts as part {
+        if !part.is_integer() : return false
+    }
+    return true
+}

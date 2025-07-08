@@ -2,6 +2,59 @@
 use valk:fs
 use valk:core
 
+fn help_intro_use() {
+    println("💿 Valk version control");
+    println("");
+    println(" vpkg use 0.0.1       Install valk version 0.0.1");
+    println(" vpkg use latest      Install latest version");
+    println(" vpkg use             Install valk version defined in project valk.json");
+    println("                      Expected config: { \"valk-version\": \"0.0.1\" }");
+}
+
+fn help_cmd_use(code: i32, msg: ?String (null)) $exit {
+
+    if isset(msg) {
+        println(msg)
+        println("-----------------")
+    }
+
+    help_intro_use()
+
+    exit(code)
+}
+
+fn cmd_use(args: Array[String], options: Array[String]) {
+
+    if options.contains("-h") || options.contains("--help") : help_cmd_use(0)
+
+    let vv = get_versions()
+
+    let version = args.get(0) !? get_version_from_config()
+
+    if version == "latest" {
+        let valk_latest = vv.valk
+        if !isset(valk_latest) : error("❌ Vpkg was unable to find out what the latest valk version is")
+        version = valk_latest
+    }
+
+    if !is_valid_version(version) : error("❌ Invalid version syntax: '" + version + "'")
+
+    check_vpkg_versions(vv)
+
+    println("# Use version: " + version)
+
+    if is_installed(version, args) {
+        println("# Version is already installed")
+        link_version(version_dir(version, args))
+        return
+    }
+
+    // println("Vpkg current: " + vv.vpkg_current)
+    // println("Vpkg latest: " + vv.vpkg_latest)
+
+    link_version(version_dir(version, args))
+}
+
 fn is_installed(version: String, args: Array[String]) bool {
     #if OS == win
     let path = version_dir(version, args) + "valk.exe"
@@ -35,28 +88,4 @@ fn link_version(version_dir: String) {
     }
 
     println("+ Link '" + link + "' to '" + to + "'")
-}
-
-fn vc_use(version: String, args: Array[String]) {
-    let vv = get_versions()
-    check_vpkg_versions(vv)
-
-    if version == "latest" {
-        let valk_latest = vv.valk
-        if !isset(valk_latest) : error("Vpkg was unable to find out what the latest valk version is")
-        version = valk_latest
-    }
-
-    println("# Use version: " + version)
-
-    if is_installed(version, args) {
-        println("# Version is already installed")
-        link_version(version_dir(version, args))
-        return
-    }
-
-    // println("Vpkg current: " + vv.vpkg_current)
-    // println("Vpkg latest: " + vv.vpkg_latest)
-
-    link_version(version_dir(version, args))
 }

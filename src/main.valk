@@ -1,14 +1,14 @@
 
 fn main(args: Array[String]) {
 
+    let options = extract_options(args)
+
     args.remove_index(0)
     let action = args.get(0) ! help(0)
     args.remove_index(0)
 
     if action == "use" {
-        let version = args.get(0) ! help(1)
-        args.remove_index(0)
-        vc_use(version, args)
+        cmd_use(args, options)
     } else {
         println("Unknown action: '" + action + "'")
         exit(1)
@@ -19,34 +19,36 @@ fn help(code: i32) $exit {
     println("------------------------------")
     println(" Valk Package Manager " + #STR(VERSION))
     println("------------------------------")
-    print("\n")
 
-    println("📦 Package commands");
+    // Packages
     print("\n")
-    println(" vpkg install         Install pacakages defined in the valk.json config");
-    println(" vpkg install {pkg}   Install pacakage globally");
-    println(" vpkg remove {pkg}    Remove pacakage");
-
+    help_intro_pkg_commands()
+    // Use
     print("\n")
-    println("💿 Valk version control");
-    println("");
-    println(" vpkg use 0.0.1       Install valk version 0.0.1");
-    println(" vpkg use latest      Install latest version");
-    println(" vpkg use             Install valk version defined in project valk.json");
-    println("                      Expected config: { \"valk-version\": \"0.0.1\" }");
-
+    help_intro_use()
+    // Toolchains
     print("\n")
-    println("🔗 Toolchain commands");
-    print("\n")
-    println(" vpkg toolchain get {target}");
-
+    help_intro_toolchain()
+    // Other
     print("\n")
     println("⚙️ Other");
     print("\n")
-    println(" vpkg --help / -h");
+    println(" vpkg {action} --help / -h");
     println(" vpkg --version / -v");
 
     print("\n")
 
     exit(code)
+}
+
+
+fn extract_options(args: Array[String]) Array[String] {
+    let options = array[String]{}
+    each args as arg, i {
+        if arg.starts_with("-") {
+            options.push(arg)
+            args.remove_index(i--)
+        }
+    }
+    return options
 }
