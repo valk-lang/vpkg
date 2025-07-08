@@ -1,0 +1,52 @@
+
+use valk:fs
+
+fn div() String {
+    #if OS == win
+    return "\\"
+    #else
+    return "/"
+    #end
+}
+
+fn install_dir(args: Array[String]) String {
+    // let find = args.get("--install-dir")
+    #if OS == win
+    let dir = fs:home_dir() + "\\.valk\\versions\\"
+    #else
+    let dir = "/opt/valk/"
+    #end
+
+    return dir
+}
+
+fn version_dir(version: String, args: Array[String]) String {
+    #if OS == win
+    let path = install_dir(args) + version + div()
+    #else
+    let path = install_dir(args) + version + div()
+    #end
+    return path
+}
+
+fn bin_dir() String {
+    #if OS == win
+    let home = fs:home_dir() !? "~"
+    let dir = home + div() + ".valk"
+    if !fs:is_dir(dir) : fs:mkdir(dir) ! error("Failed to create directory: " + dir)
+    dir += div() + "bin"
+    if !fs:is_dir(dir) : fs:mkdir(dir) ! error("Failed to create directory: " + dir)
+    return dir + div()
+    #else
+    return "/usr/local/bin/"
+    #end
+}
+
+fn cache_dir() String {
+    let home = fs:home_dir() !? "~"
+    let cache_dir = home + div() + ".valk"
+    if !fs:is_dir(cache_dir) : fs:mkdir(cache_dir) ! error("Failed to create cache directory: " + cache_dir)
+    cache_dir += div() + "vpkg"
+    if !fs:is_dir(cache_dir) : fs:mkdir(cache_dir) ! error("Failed to create cache directory: " + cache_dir)
+    return cache_dir + div()
+}

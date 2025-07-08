@@ -1,0 +1,16 @@
+
+fn valk_exe() String {
+    #if OS == win
+    return "valk.exe"
+    #else
+    return "valk"
+    #end
+}
+
+fn vpkg_exe() String {
+    #if OS == win
+    return "vpkg.exe"
+    #else
+    return "vpkg"
+    #end
+}

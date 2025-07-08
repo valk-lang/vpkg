@@ -11,7 +11,7 @@ class Versions {
 
 fn get_versions() Versions {
     let cd = cache_dir()
-    let path = cd + "/vpkg.json"
+    let path = cd + "vpkg.json"
     let data = fs:read(path) !? "{}"
     let conf = json:decode(data) !? json:new_object()
 
@@ -42,5 +42,14 @@ fn get_versions() Versions {
         vpkg_latest: vpkg_latest
         vpkg_current: #STR(VERSION)
         valk: valk_latest
+    }
+}
+
+fn check_vpkg_versions(vv: Versions) {
+    if vv.vpkg_current != vv.vpkg_latest {
+        println("# There is a new vpkg version available: " + vv.vpkg_latest)
+        println("# Update command: vpkg self-update")
+    } else {
+        println("# Vpkg is " + "up-to-date".ansi.green())
     }
 }

@@ -1,0 +1,62 @@
+
+use valk:fs
+use valk:core
+
+fn is_installed(version: String, args: Array[String]) bool {
+    #if OS == win
+    let path = version_dir(version, args) + "valk.exe"
+    #else
+    let path = version_dir(version, args) + "valk"
+    #end
+    return fs:is_file(path)
+}
+
+fn link_version(version_dir: String) {
+    let to = version_dir + valk_exe()
+    let link = bin_dir() + valk_exe()
+    if fs:exists(link) {
+        fs:remove(link) ! {
+            println("⚠️ Failed to remove previous link: " + link)
+        }
+    }
+    #if OS == win
+    let cmd = "mklink \"" + link + "\" \"" + to + "\""
+    #else
+    let cmd = "ln -s \"" + to + "\" \"" + link + "\""
+    #end
+
+    let code, out = core:exec(cmd) ! {
+        println("❌ Link command failed: " + cmd)
+        exit(1)
+    }
+    if code != 0 {
+        println("❌ Failed to create link: " + link)
+        exit(1)
+    }
+
+    println("+ Link '" + link + "' to '" + to + "'")
+}
+
+fn vc_use(version: String, args: Array[String]) {
+    let vv = get_versions()
+    check_vpkg_versions(vv)
+
+    if version == "latest" {
+        let valk_latest = vv.valk
+        if !isset(valk_latest) : error("Vpkg was unable to find out what the latest valk version is")
+        version = valk_latest
+    }
+
+    println("# Use version: " + version)
+
+    if is_installed(version, args) {
+        println("# Version is already installed")
+        link_version(version_dir(version, args))
+        return
+    }
+
+    // println("Vpkg current: " + vv.vpkg_current)
+    // println("Vpkg latest: " + vv.vpkg_latest)
+
+    link_version(version_dir(version, args))
+}
