@@ -41,40 +41,47 @@ fn cmd_use(args: Array[String], options: Array[String]) {
 
     check_vpkg_versions(vv)
 
-    println("# Use version: " + version)
-
-    if is_installed(version, args) && false {
-        println("# Version is already installed")
-        link_version(version_dir(version, args))
+    if is_installed(version) {
+        // println("# Version is already installed")
+        link_version(version_dir(version))
+        println("# Switched to version: " + version)
         return
     }
 
+    println("# Installing version: " + version)
+
     // Download version
-    download_version(version)
+    download_and_unzip_version(version)
 
     // println("Vpkg current: " + vv.vpkg_current)
     // println("Vpkg latest: " + vv.vpkg_latest)
 
-    link_version(version_dir(version, args))
+    link_version(version_dir(version))
 }
 
-fn is_installed(version: String, args: Array[String]) bool {
+fn is_installed(version: String) bool {
     #if OS == win
-    let path = version_dir(version, args) + "valk.exe"
+    let path = version_dir(version) + "valk.exe"
     #else
-    let path = version_dir(version, args) + "valk"
+    let path = version_dir(version) + "valk"
     #end
-    return fs:is_file(path)
+    return fs:exists(path)
 }
 
 fn link_version(version_dir: String) {
     let to = version_dir + valk_exe()
     let link = bin_dir() + valk_exe()
+    if !fs:exists(to) {
+        println("❌ Tried to create a symbolic link to a file that does not exist: " + to)
+        exit(1)
+        return
+    }
     if fs:exists(link) {
         fs:remove(link) ! {
             println("⚠️ Failed to remove previous link: " + link)
         }
     }
+
     #if OS == win
     let cmd = "mklink \"" + link + "\" \"" + to + "\""
     #else

@@ -10,7 +10,7 @@ class Versions {
 }
 
 fn get_versions() Versions {
-    let cd = cache_dir()
+    let cd = vpkg_dir()
     let path = cd + "vpkg.json"
     let data = fs:read(path) !? "{}"
     let conf = json:decode(data) !? json:new_object()

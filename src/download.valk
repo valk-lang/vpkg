@@ -1,5 +1,7 @@
 
 use valk:http
+use valk:fs
+use valk:core
 
 fn cdn_host() String {
     return "https://cdn.valk-lang.dev"
@@ -23,17 +25,48 @@ fn get_arch() String {
     #end
 }
 
-fn download_version(v: String) {
+fn download_and_unzip_version(v: String) {
+    let vdir = version_dir(v)
+    if !fs:exists(vdir) : fs:mkdir(vdir) ! error("❌ Failed to create directory: " + vdir)
+    let to_path = downloads_dir() + "valk-"+ v +"-" + get_os() + "-" + get_arch() + ".tar.gz"
+    download_version(v, to_path)
+    println("# Unpacking files to: " + vdir)
+    core:exec("tar -xzf \"" + to_path + "\" -C \"" + vdir + "\"") _
+}
+
+fn download_version(v: String, to_path: String) {
+
+    if fs:exists(to_path) : return
+
     let url = host() + "/api/download/url/" + get_os() + "/" + get_arch() + "/" + v
     let resp = http:request("GET", url) ! error("❌ Failed to fetch download URL from: " + url)
+    if resp.status == 404 : error("⚠️ Version does not exist: " + v)
     if resp.status != 200 : error("❌ Invalid response from: " + url)
     url = resp.body
-    println("# Downloading : " + url)
 
-    let client = http:client("GET", url)
-    let req = client.request() ! {
-        println("ERR: " + EMSG)
+    println("# Downloading: " + url)
+
+    let tmp_path = to_path + ".tmp"
+
+    let options = http:Options {
+        output_to_file: tmp_path
+    }
+
+    let req = http:create_request("GET", url, options) ! {
         if E == E.invalid_url : error("❌ Invalid URL: " + url)
         error("❌ Failed to download: " + url)
     }
+
+    while req.progress() ! {
+        match E {
+            E.disconnect => error("❌ Failed to download: " + url + " (unexpected disconnect)")
+            default => error("❌ Invalid response from: " + url)
+        }
+    } {
+        print("\r# Download progress: " + req.recv_percent + "%")
+    }
+    print("\n")
+    println("# Download complete: " + to_path)
+
+    fs:move(tmp_path, to_path) _
 }
