@@ -33,18 +33,18 @@ fn cmd_use(args: Array[String], options: Array[String]) {
 
     if version == "latest" {
         let valk_latest = vv.valk
-        if !isset(valk_latest) : error("❌ vpkg was unable to find out what the latest valk version is")
+        if !isset(valk_latest) : error("vpkg was unable to find out what the latest valk version is")
         version = valk_latest
     }
 
-    if !is_valid_version(version) : error("❌ Invalid version syntax: '" + version + "'")
+    if !is_valid_version(version) : error("Invalid version syntax: '" + version + "'")
 
     check_vpkg_versions(vv)
 
     if is_installed(version) {
         // println("# Version is already installed")
         link_version(version_dir(version))
-        println("# Switched to version: " + version)
+        println("# Switched to version: " + version.ansi.green())
         return
     }
 
@@ -57,6 +57,8 @@ fn cmd_use(args: Array[String], options: Array[String]) {
     // println("Vpkg latest: " + vv.vpkg_latest)
 
     link_version(version_dir(version))
+
+    println("# Switched to version: " + version.ansi.green())
 }
 
 fn is_installed(version: String) bool {
@@ -72,13 +74,12 @@ fn link_version(version_dir: String) {
     let to = version_dir + valk_exe()
     let link = bin_dir() + valk_exe()
     if !fs:exists(to) {
-        println("❌ Tried to create a symbolic link to a file that does not exist: " + to)
-        exit(1)
+        error("Tried to create a symbolic link to a file that does not exist: " + to)
         return
     }
     if fs:exists(link) {
         fs:remove(link) ! {
-            println("⚠️ Failed to remove previous link: " + link)
+            warn("Failed to remove previous link: " + link)
         }
     }
 
@@ -89,13 +90,11 @@ fn link_version(version_dir: String) {
     #end
 
     let code, out = core:exec(cmd) ! {
-        println("❌ Link command failed: " + cmd)
-        exit(1)
+        error("Link command failed: " + cmd)
     }
     if code != 0 {
-        println("❌ Failed to create link: " + link)
-        exit(1)
+        error("Failed to create link: " + link)
     }
 
-    println("+ Link '" + link + "' to '" + to + "'")
+    println("# Link '" + link.ansi.blue() + "' to '" + to.ansi.blue() + "'")
 }

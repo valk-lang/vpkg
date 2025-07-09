@@ -27,7 +27,7 @@ fn get_arch() String {
 
 fn download_and_unzip_version(v: String) {
     let vdir = version_dir(v)
-    if !fs:exists(vdir) : fs:mkdir(vdir) ! error("❌ Failed to create directory: " + vdir)
+    if !fs:exists(vdir) : fs:mkdir(vdir) ! error("Failed to create directory: " + vdir)
     let to_path = downloads_dir() + "valk-"+ v +"-" + get_os() + "-" + get_arch() + ".tar.gz"
     download_version(v, to_path)
     println("# Unpacking files to: " + vdir)
@@ -39,9 +39,9 @@ fn download_version(v: String, to_path: String) {
     if fs:exists(to_path) : return
 
     let url = host() + "/api/download/url/" + get_os() + "/" + get_arch() + "/" + v
-    let resp = http:request("GET", url) ! error("❌ Failed to fetch download URL from: " + url)
-    if resp.status == 404 : error("⚠️ Version does not exist: " + v)
-    if resp.status != 200 : error("❌ Invalid response from: " + url)
+    let resp = http:request("GET", url) ! error("Failed to fetch download URL from: " + url)
+    if resp.status == 404 : error("Version does not exist: " + v)
+    if resp.status != 200 : error("Invalid response from: " + url)
     url = resp.body
 
     println("# Downloading: " + url)
@@ -53,14 +53,14 @@ fn download_version(v: String, to_path: String) {
     }
 
     let req = http:create_request("GET", url, options) ! {
-        if E == E.invalid_url : error("❌ Invalid URL: " + url)
-        error("❌ Failed to download: " + url)
+        if E == E.invalid_url : error("Invalid URL: " + url)
+        error("Failed to download: " + url)
     }
 
     while req.progress() ! {
         match E {
-            E.disconnect => error("❌ Failed to download: " + url + " (unexpected disconnect)")
-            default => error("❌ Invalid response from: " + url)
+            E.disconnect => error("Failed to download: " + url + " (unexpected disconnect)")
+            default => error("Invalid response from: " + url)
         }
     } {
         print("\r# Download progress: " + req.recv_percent + "%")

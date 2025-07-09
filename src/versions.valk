@@ -57,11 +57,11 @@ fn check_vpkg_versions(vv: Versions) {
 fn get_version_from_config() String {
     let path = fs:cwd() + div() + "valk.json"
 
-    let data = fs:read(path) ! error("❌ No config found: " + path)
+    let data = fs:read(path) ! error("No config found: " + path)
 
-    let json = json:decode(data) ! error("❌ Invalid json in: " + path)
+    let json = json:decode(data) ! error("Invalid json in: " + path)
     let version = json.get("valk-version").string()
-    if version.empty() : error("❌ No version specified in: " + path)
+    if version.empty() : error("No version specified in: " + path)
     return version
 }
 

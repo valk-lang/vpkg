@@ -1,0 +1,14 @@
+
+use valk:ansi
+
+fn error(msg: String) $exit {
+    if ansi:supported() : println("❌ " + msg)
+    else : println("> " + msg)
+    exit(1)
+}
+
+fn warn(msg: String) {
+    if ansi:supported() : println("⚠️ " + msg)
+    else : println("> " + msg)
+}
+
