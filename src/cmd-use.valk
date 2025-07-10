@@ -1,6 +1,7 @@
 
 use valk:fs
 use valk:core
+use valk:ansi
 
 fn help_intro_use() {
     println(emo("💿", "#") + " Valk version control");
@@ -41,24 +42,17 @@ fn cmd_use(args: Array[String], options: Array[String]) {
 
     check_vpkg_versions(vv)
 
-    if is_installed(version) {
-        // println("# Version is already installed")
-        link_version(version_dir(version))
-        println("# Switched to version: " + version.ansi.green())
-        return
+    if !is_installed(version) {
+        // Download version
+        println("# Installing version: " + version)
+        download_and_unzip_version(version)
     }
 
-    println("# Installing version: " + version)
-
-    // Download version
-    download_and_unzip_version(version)
-
-    // println("Vpkg current: " + vv.vpkg_current)
-    // println("Vpkg latest: " + vv.vpkg_latest)
-
+    // Link
     link_version(version_dir(version))
-
-    println("# Switched to version: " + version.ansi.green())
+    //
+    if ansi:supported() : println("# Switched to version: " + version.ansi.green())
+    else : println("# Switched to version: " + version)
 }
 
 fn is_installed(version: String) bool {
@@ -73,28 +67,21 @@ fn is_installed(version: String) bool {
 fn link_version(version_dir: String) {
     let to = version_dir + valk_exe()
     let link = bin_dir() + valk_exe()
-    if !fs:exists(to) {
-        error("Tried to create a symbolic link to a file that does not exist: " + to)
-        return
-    }
-    if fs:exists(link) {
-        fs:remove(link) ! {
-            warn("Failed to remove previous link: " + link)
-        }
+
+    // Check target
+    if !fs:exists(to) : error("Tried to create a symbolic link to a file that does not exist: " + to)
+
+    // Remove existing link
+    if fs:exists(link) : fs:remove(link) ! warn("Failed to remove previous link: " + link)
+
+    // Create link
+    fs:symlink(link, to, false) ! {
+        if E == E.permissions : error("Failed to create symlink | Admin privileges required")
+        if E == E.exists : error("Failed to create symlink | File already exists")
+        error("Failed to create symlink")
     }
 
-    #if OS == win
-    let cmd = "mklink \"" + link + "\" \"" + to + "\""
-    #else
-    let cmd = "ln -s \"" + to + "\" \"" + link + "\""
-    #end
-
-    let code, out = core:exec(cmd) ! {
-        error("Link command failed: " + cmd)
-    }
-    if code != 0 {
-        error("Failed to create link: " + link)
-    }
-
-    println("# Link '" + link.ansi.blue() + "' to '" + to.ansi.blue() + "'")
+    // Message
+    if ansi:supported() : println("# Link '" + link.ansi.blue() + "' to '" + to.ansi.blue() + "'")
+    else : println("# Link '" + link + "' to '" + to + "'")
 }

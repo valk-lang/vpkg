@@ -27,7 +27,8 @@ dist-macos-arm64:
 
 dist-win:
 	mkdir -p ./dists/win-x64
-	$(vc) build src/*.valk -o ./dists/win-x64/vpkg $(DEFS) --target win-x64
+	$(vc) build src/*.valk -o /mnt/c/www/vpkg.exe $(DEFS) --target win-x64
+# $(vc) build src/*.valk -o ./dists/win-x64/vpkg $(DEFS) --target win-x64
 
 dist-all: dist-linux-x64 dist-macos-x64 dist-macos-arm64 dist-win
 	curl -o ./dists/win-x64/cacert.pem https://curl.se/ca/cacert.pem

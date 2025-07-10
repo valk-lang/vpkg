@@ -15,13 +15,28 @@ fn get_arch() String {
     return #STR(ARCH)
 }
 
+fn get_pack_ext() String {
+    #if OS == win
+    return "zip"
+    #else
+    return "tar.gz"
+    #end
+}
+
 fn download_and_unzip_version(v: String) {
     let vdir = version_dir(v)
     if !fs:exists(vdir) : fs:mkdir(vdir) ! error("Failed to create directory: " + vdir)
-    let to_path = downloads_dir() + "valk-"+ v +"-" + get_os() + "-" + get_arch() + ".tar.gz"
+    let to_path = downloads_dir() + "valk-"+ v +"-" + get_os() + "-" + get_arch() + "." + get_pack_ext()
     download_version(v, to_path)
+    // Unpack
     println("# Unpacking files to: " + vdir)
+    #if OS == win
+    let cmd = "tar -xzf \"" + to_path + "\" -C \"" + vdir + "\""
+    cmd = cmd.replace("\\", "/")
+    core:exec(cmd) _
+    #else
     core:exec("tar -xzf \"" + to_path + "\" -C \"" + vdir + "\"") _
+    #end
 }
 
 fn download_version(v: String, to_path: String) {
@@ -49,9 +64,10 @@ fn download_version(v: String, to_path: String) {
 
     while req.progress() ! {
         print("\n")
+        println(req.recv_buffer)
         match E {
-            E.disconnect => error("Failed to download: " + url + " (unexpected disconnect)")
-            default => error("Invalid response from: " + url)
+            E.disconnect => error("Failed to download: " + url + " | " + EMSG)
+            default => error("Invalid response from: " + url + " | " + EMSG)
         }
     } {
         print("\r# Download progress: " + req.recv_percent + "%")

@@ -2,6 +2,7 @@
 use valk:json
 use valk:fs
 use valk:time
+use valk:ansi
 
 class Versions {
     vpkg_latest: String
@@ -53,7 +54,8 @@ fn check_vpkg_versions(vv: Versions) {
         println("# There is a new vpkg version available: " + vv.vpkg_latest)
         println("# Update command: vpkg self-update")
     } else {
-        println("# vpkg is " + "up-to-date".ansi.green())
+        if ansi:supported() : println("# vpkg is " + "up-to-date".ansi.green())
+        else : println("# vpkg is " + "up-to-date")
     }
 }
 
