@@ -1,6 +1,6 @@
 
 fn help_intro_pkg_commands() {
-    println("📦 Package commands");
+    println(emo("📦", "#") + " Package commands (WIP)");
     print("\n")
     println(" vpkg install         Install pacakages defined in the valk.json config");
     println(" vpkg install {pkg}   Install pacakage");

@@ -1,6 +1,6 @@
 
 fn help_intro_toolchain() {
-    println("🔗 Toolchain commands");
+    println(emo("🔗", "#") + " Toolchain commands (WIP)");
     println("");
     println(" vpkg toolchain get {target}");
 }

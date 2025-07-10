@@ -3,7 +3,7 @@ use valk:fs
 use valk:core
 
 fn help_intro_use() {
-    println("💿 Valk version control");
+    println(emo("💿", "#") + " Valk version control");
     println("");
     println(" vpkg use 0.0.1       Install valk version 0.0.1");
     println(" vpkg use latest      Install latest version");

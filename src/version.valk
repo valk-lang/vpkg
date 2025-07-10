@@ -1,0 +1,44 @@
+
+class Version {
+    full: String
+    n1: uint
+    n2: uint
+    n3: uint
+
+    static fn new(v: String) SELF !invalid {
+        let parts = v.split(".")
+        if parts.length != 3 : throw invalid
+        each parts as part {
+            if !part.is_integer() : throw invalid
+        }
+        let p1 = parts.get(0) ! throw invalid
+        let p2 = parts.get(1) ! throw invalid
+        let p3 = parts.get(2) ! throw invalid
+        return Version {
+            full: v
+            n1: p1.to_uint() ! throw invalid
+            n2: p2.to_uint() ! throw invalid
+            n3: p3.to_uint() ! throw invalid
+        }
+    }
+
+    // Compare
+    fn eq(v: Version) bool $eq {
+        return this.n1 == v.n1 && this.n2 == v.n2 && this.n3 == v.n3
+    }
+    fn lt(v: Version) bool $lt {
+        if this.n1 < v.n1 : return true
+        if this.n2 < v.n2 : return true
+        if this.n3 < v.n3 : return true
+        return false
+    }
+    fn lte(v: Version) bool $lte {
+        return this.lt(v) || this.eq(v)
+    }
+    fn gt(v: Version) bool $gt {
+        return !this.lte(v)
+    }
+    fn gte(v: Version) bool $gte {
+        return !this.lt(v)
+    }
+}

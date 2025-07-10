@@ -1,4 +1,11 @@
 
+use valk:core
+use valk:ansi
+
+fn emo(emo: String, alt: String) String {
+    return ansi:supported() ? emo : alt
+}
+
 fn main(args: Array[String]) {
 
     let options = extract_options(args)
@@ -9,6 +16,8 @@ fn main(args: Array[String]) {
 
     if action == "use" {
         cmd_use(args, options)
+    } else if action == "version" {
+        println(#STR(VERSION))
     } else {
         println("Unknown action: '" + action + "'")
         exit(1)
@@ -16,6 +25,7 @@ fn main(args: Array[String]) {
 }
 
 fn help(code: i32) $exit {
+
     println("------------------------------")
     println(" Valk Package Manager " + #STR(VERSION))
     println("------------------------------")
@@ -31,10 +41,11 @@ fn help(code: i32) $exit {
     help_intro_toolchain()
     // Other
     print("\n")
-    println("⚙️ Other");
+    println(emo("⚙️", "#") + " vpkg commands");
     print("\n")
-    println(" vpkg {action} --help / -h");
-    println(" vpkg --version / -v");
+    println(" vpkg self-update     Update vpkg itself");
+    println(" vpkg version         Show vpkg version");
+    println(" vpkg {command} -h    Show help for a command");
 
     print("\n")
 

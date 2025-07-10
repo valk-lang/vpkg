@@ -46,7 +46,10 @@ fn get_versions() Versions {
 }
 
 fn check_vpkg_versions(vv: Versions) {
-    if vv.vpkg_current != vv.vpkg_latest {
+    let up_to_date = true
+    let v_current = Version.new(vv.vpkg_current) !? null
+    let v_latest = Version.new(vv.vpkg_latest) !? null
+    if isset(v_current) && isset(v_latest) && v_latest > v_current {
         println("# There is a new vpkg version available: " + vv.vpkg_latest)
         println("# Update command: vpkg self-update")
     } else {
@@ -66,10 +69,6 @@ fn get_version_from_config() String {
 }
 
 fn is_valid_version(v: String) bool {
-    let parts = v.split(".")
-    if parts.length != 3 : return false
-    each parts as part {
-        if !part.is_integer() : return false
-    }
+    let ver = Version.new(v) ! return false
     return true
 }

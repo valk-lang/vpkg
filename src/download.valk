@@ -8,21 +8,11 @@ fn cdn_host() String {
 }
 
 fn get_os() String {
-    #if OS == win
-    return "win"
-    #elif OS == linux
-    return "linux"
-    #elif OS == macos
-    return "macos"
-    #end
+    return #STR(OS)
 }
 
 fn get_arch() String {
-    #if ARCH == x64
-    return "x64"
-    #elif ARCH == arm64
-    return "arm64"
-    #end
+    return #STR(ARCH)
 }
 
 fn download_and_unzip_version(v: String) {
@@ -58,6 +48,7 @@ fn download_version(v: String, to_path: String) {
     }
 
     while req.progress() ! {
+        print("\n")
         match E {
             E.disconnect => error("Failed to download: " + url + " (unexpected disconnect)")
             default => error("Invalid response from: " + url)
