@@ -1,5 +1,5 @@
 
-file="./dists/win-x64/cacert.pem"
+file="./dists/win-x64/bin/cacert.pem"
 
 if [[ ! -e $file || $(find "$file" -mtime +14 -print) ]]; then
 	echo "cacert.pem is older than 14 days -> Downloading new certificate"
