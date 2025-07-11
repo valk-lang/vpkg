@@ -16,6 +16,8 @@ fn main(args: Array[String]) {
 
     if action == "use" {
         cmd_use(args, options)
+    } else if action == "self-update" {
+        self_update()
     } else if action == "version" {
         println(#STR(VERSION))
     } else {

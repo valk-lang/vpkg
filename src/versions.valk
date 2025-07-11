@@ -46,16 +46,19 @@ fn get_versions() Versions {
     }
 }
 
-fn check_vpkg_versions(vv: Versions) {
-    let up_to_date = true
+fn vpkg_is_up_to_date(vv: Versions) bool {
     let v_current = Version.new(vv.vpkg_current) !? null
     let v_latest = Version.new(vv.vpkg_latest) !? null
-    if isset(v_current) && isset(v_latest) && v_latest > v_current {
-        println("# There is a new vpkg version available: " + vv.vpkg_latest)
-        println("# Update command: vpkg self-update")
-    } else {
+    return isset(v_current) && isset(v_latest) && v_current >= v_latest
+}
+
+fn check_vpkg_versions(vv: Versions) {
+    if vpkg_is_up_to_date(vv) {
         if ansi:supported() : println("# vpkg is " + "up-to-date".ansi.green())
         else : println("# vpkg is " + "up-to-date")
+    } else {
+        println("# There is a new vpkg version available: " + vv.vpkg_latest)
+        println("# Update command: vpkg self-update")
     }
 }
 

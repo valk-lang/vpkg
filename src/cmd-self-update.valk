@@ -1,0 +1,59 @@
+
+use valk:ansi
+use valk:http
+use valk:fs
+use valk:core
+
+fn self_update() {
+    let vv = get_versions()
+
+    if vpkg_is_up_to_date(vv) {
+        msg_uptodate()
+        return
+    }
+
+    println("# Downloading latest vpkg")
+
+    let to_path = downloads_dir() + "vpkg.tar.gz"
+    let tmp_path = downloads_dir() + "vpkg.tar.gz.tmp"
+    let url = cdn_host() + "/releases/vpkg/vpkg-" + get_os() + "-" + get_arch() + ".tar.gz"
+
+    // Download
+    let options = http:Options {
+        output_to_file: tmp_path
+    }
+
+    let req = http:create_request("GET", url, options) ! {
+        if E == E.invalid_url : error("Invalid URL: " + url)
+        error("Failed to download: " + url)
+    }
+
+    while req.progress() ! {
+        print("\n")
+        println(req.recv_buffer)
+        match E {
+            E.disconnect => error("Failed to download: " + url + " | " + EMSG)
+            default => error("Invalid response from: " + url + " | " + EMSG)
+        }
+    } {
+        print("\r# Download progress: " + req.recv_percent + "%")
+    }
+    print("\n")
+    println("# Download complete: " + to_path)
+
+    // Move
+    fs:move(tmp_path, to_path) _
+
+    // Unpack
+    let vdir = vpkg_dir()
+    println("# Unpacking files to: " + vdir)
+    #if OS == win
+    let cmd = "tar -xzf \"" + to_path + "\" -C \"" + vdir + "\""
+    cmd = cmd.replace("\\", "/")
+    core:exec(cmd) _
+    #else
+    core:exec("tar -xzf \"" + to_path + "\" -C \"" + vdir + "\"") _
+    #end
+
+    msg_uptodate()
+}
