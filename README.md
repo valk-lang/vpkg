@@ -31,6 +31,7 @@ SOON
 
 ⚙️ Other
 
- vpkg --help / -h
- vpkg --version / -v
+ vpkg self-update     Update vpkg itself
+ vpkg version         Show vpkg version
+ vpkg {command} -h    Show help for a command
  ```
