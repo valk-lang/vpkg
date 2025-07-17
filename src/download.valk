@@ -4,7 +4,7 @@ use valk:fs
 use valk:core
 
 fn cdn_host() String {
-    return "https://cdn.valk-lang.dev"
+    return "https://files.valk-cdn.dev"
 }
 
 fn get_os() String {
