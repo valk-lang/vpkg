@@ -6,3 +6,12 @@ fn help_intro_pkg_commands() {
     println(" vpkg install {pkg}   Install pacakage");
     println(" vpkg remove {pkg}    Remove pacakage");
 }
+
+
+fn cmd_package_install(args: Array[String], options: Map[String]) {
+    let name = args.get(0) ! help(1)
+    let src = Source.new(name)
+}
+
+fn cmd_package_remove(args: Array[String], options: Map[String]) {
+}

@@ -1,0 +1,49 @@
+
+use valk:json
+
+enum SRC {
+    github
+}
+
+class Source {
+    type: int
+    name: String
+    user_name: String ("")
+    repo_name: String ("")
+    versions: ?Array[Version] (null)
+
+    static fn new(name: String) SELF {
+        if name.starts_with("github.com/") {
+            name = name.substr("github.com/".length, name.length)
+            let split = name.split("/")
+            if split.length != 2 : error("Invalid github package name: " + name)
+            let user = split.get(0) ! error("Missing user name")
+            let repo = split.get(1) ! error("Missing repo name")
+            if !github_exists(user, repo) : error("Github repository does not exist")
+            return SELF {
+                type: SRC.github
+                name: name
+                user_name: user
+                repo_name: repo
+            }
+        }
+        error("Unknown source: " + name + ", package names must be with 'github.com/'.")
+    }
+
+    fn get_versions() Array[Version] {
+        let vv = this.versions
+        if isset(vv) : return vv
+        let versions = array[Version]{}
+        let data = json:new_array()
+        if this.type == SRC.github {
+            data = github_req("GET", "/repos/" + this.user_name + "/" + this.repo_name + "/tags") !? data
+        }
+        let tags = data.array()
+        each tags as tag {
+            let name = tag.get("name")
+            versions.push(Version.new(name) ! continue)
+        }
+        this.versions = versions
+        return versions
+    }
+}

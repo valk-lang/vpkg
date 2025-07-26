@@ -16,6 +16,10 @@ fn main(args: Array[String]) {
 
     if action == "use" {
         cmd_use(args, options)
+    } else if action == "install" {
+        cmd_package_install(args, options)
+    } else if action == "remove" {
+        cmd_package_remove(args, options)
     } else if action == "self-update" {
         self_update()
     } else if action == "version" {
