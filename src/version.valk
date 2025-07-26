@@ -6,9 +6,10 @@ class Version {
     n3: uint
 
     static fn new(v: String) SELF !invalid {
+        if v.starts_with("v") || v.starts_with("V") : v = v.substr(1, v.length)
         let parts = v.split(".")
         if parts.length != 3 : throw invalid
-        each parts as part {
+        each parts as part, i {
             if !part.is_integer() : throw invalid
         }
         let p1 = parts.get(0) ! throw invalid
@@ -20,6 +21,10 @@ class Version {
             n2: p2.to_uint() ! throw invalid
             n3: p3.to_uint() ! throw invalid
         }
+    }
+
+    fn str() String $to {
+        return this.full
     }
 
     // Compare

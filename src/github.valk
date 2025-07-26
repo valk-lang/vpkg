@@ -20,6 +20,6 @@ fn github_req(method: String, path: String) json:Value !fail {
 fn github_exists(user: String, repo: String) bool {
     let data = github_req("GET", "/repos/%user/%repo") ! return false
     let id = data.get("id").int()
-    println("id: " + id)
+    // println("id: " + id)
     return id != 0
 }

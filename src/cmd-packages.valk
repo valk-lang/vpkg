@@ -10,7 +10,21 @@ fn help_intro_pkg_commands() {
 
 fn cmd_package_install(args: Array[String], options: Map[String]) {
     let name = args.get(0) ! help(1)
+    let version : ?Version = null
+    let version_str = args.get(1) !? null
+    if isset(version_str) : version = Version.new(version_str) ! error("Invalid version syntax: " + version_str)
+    // Source
     let src = Source.new(name)
+    let versions = src.get_versions()
+    if isset(version) {
+        if !versions.contains(version) : error("Version does not exist: " + version)
+    } else {
+        version = src.get_highest_version() ! error("Package has no versions")
+    }
+
+    each versions as v {
+        println("V: %{v.full}")
+    }
 }
 
 fn cmd_package_remove(args: Array[String], options: Map[String]) {

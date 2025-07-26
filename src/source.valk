@@ -46,4 +46,18 @@ class Source {
         this.versions = versions
         return versions
     }
+
+    fn get_highest_version() Version !none {
+        let vv = this.get_versions()
+        let high : ?Version = null
+        each vv as v {
+            if !isset(high) {
+                high = v
+                continue
+            }
+            if v > high : high = v
+        }
+        if isset(high) : return high
+        throw none
+    }
 }
