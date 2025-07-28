@@ -20,9 +20,9 @@ class Version {
             let all_ints = true
             each parts as part : if !part.is_integer() : all_ints = false
             if all_ints {
-                res.n1 (parts.get(0) !? "0").to_uint() !? 0
-                res.n2 (parts.get(1) !? "0").to_uint() !? 0
-                res.n3 (parts.get(2) !? "0").to_uint() !? 0
+                res.n1 = (parts.get(0) !? "0").to_uint() !? 0
+                res.n2 = (parts.get(1) !? "0").to_uint() !? 0
+                res.n3 = (parts.get(2) !? "0").to_uint() !? 0
                 res.can_compare = true
             }
         }
