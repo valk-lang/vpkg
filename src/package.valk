@@ -1,18 +1,41 @@
 
 use valk:json
 use valk:http
+use valk:fs
 
 class Package {
+    project: Project
+    name: String
+    dot_name: String
     id: String
-    s: Source
-    v: Version
+    path: String
+    src: Source
+    ver: Version
     conf: ?json:Value (null)
 
-    static fn init(s: Source, v: Version) Package {
+    static fn init(project: Project, name: String, version: ?String) Package {
+
+        let src = Source.new(name)
+
+        // Version
+        let ver : ?Version = null
+        if isset(version) : ver = Version.new(version) ! error("Invalid version syntax: " + version)
+        // Validate version
+        let versions = src.get_versions()
+        if isset(ver) {
+            if !versions.contains(ver) : error("Version '%ver' does not exist")
+        } else {
+            ver = src.get_highest_version() ! error("Package '%name' hasnt created any versions yet")
+        }
+
         return Package {
-            id: s.name + "/" + v.name
-            s: s
-            v: v
+            project: project
+            name: name
+            dot_name: src.name
+            id: fs:add(src.name, ver.name)
+            path: fs:add(fs:add(project.dir, src.name), ver.name)
+            src: src
+            ver: ver
         }
     }
 
@@ -24,8 +47,8 @@ class Package {
         let conf = this.conf
         if isset(conf) : return conf
         let conf_str = ""
-        let s = this.s
-        let v = this.v
+        let s = this.src
+        let v = this.ver
         if s.type == SRC.github {
             let url = "https://raw.githubusercontent.com/" + s.user_name + "/" + s.repo_name + "/" + v.hash + "/valk.json"
             println("# Loading '%v' from '%url'")
@@ -37,5 +60,9 @@ class Package {
 
         this.conf = conf
         return conf
+    }
+
+    fn install() bool {
+        return true
     }
 }

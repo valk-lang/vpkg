@@ -1,9 +1,11 @@
 
 class Project {
+    dir: String
     packages: Map[Package] (map[Package]{})
 
     static fn new() SELF {
         return SELF {
+            dir: vendor_dir()
         }
     }
 }

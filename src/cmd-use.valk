@@ -1,6 +1,5 @@
 
 use valk:fs
-use valk:core
 use valk:ansi
 
 fn help_intro_use() {

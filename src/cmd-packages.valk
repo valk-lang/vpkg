@@ -9,34 +9,24 @@ fn help_intro_pkg_commands() {
 
 
 fn cmd_package_install(args: Array[String], options: Map[String]) {
-    // Source
-    let name = args.get(0) ! help(1)
-    let src = Source.new(name)
-    // Version
-    let version : ?Version = null
-    let version_str = args.get(1) !? null
-    if isset(version_str) : version = Version.new(version_str) ! error("Invalid version syntax: " + version_str)
-    // Validate version
-    let versions = src.get_versions()
-    if isset(version) {
-        if !versions.contains(version) : error("Version '%version' does not exist")
-    } else : version = src.get_highest_version() ! error("Package '%name' hasnt created any versions yet")
-
-    println(version.name)
-    return
 
     // Project
     let p = Project.new()
-    // Pkg
-    let pkg = Package.init(src, version)
-    p.packages.set(pkg.id, pkg)
-    // Check if installed
 
     // Source
+    let install_pkg_name = args.get(0) !? null
+    if isset(install_pkg_name) {
+        // Version to install
+        let install_version = args.get(1) !? null
+        // Package
+        let pkg = Package.init(p, install_pkg_name, install_version)
 
+        p.packages.set(pkg.id, pkg)
 
-    each versions as v {
-        println("V: %{v.name} | %{v.hash}")
+        // Check if installed
+        if !pkg.installed() {
+            pkg.install()
+        }
     }
 }
 

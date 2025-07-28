@@ -1,5 +1,4 @@
 
-use valk:core
 use valk:ansi
 
 fn emo(emo: String, alt: String) String {

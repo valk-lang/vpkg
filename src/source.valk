@@ -22,7 +22,7 @@ class Source {
             // if !github_exists(user, repo) : error("Github repository does not exist")
             return SELF {
                 type: SRC.github
-                name: name
+                name: name.replace("/", ".")
                 user_name: user
                 repo_name: repo
             }
@@ -46,7 +46,7 @@ class Source {
         let data = json:new_array()
         if this.type == SRC.github {
             data = github_req("GET", "/repos/" + this.user_name + "/" + this.repo_name + "/tags") ! {
-                error("Invalid package source: " + this.name)
+                error("Package not found: " + this.name)
             }
         }
         let tags = data.array()
