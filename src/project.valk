@@ -55,10 +55,10 @@ class Project {
         let mask = pkg.mask
         if isset(mask) {
             dep.set_string("version", mask.name)
-            dep.set_string("use", pkg.ver.name)
+            dep.set_string("lock", pkg.ver.name)
         } else {
             dep.set_string("version", pkg.ver.name)
-            dep.remove("use")
+            dep.remove("lock")
         }
 
         fs:write(this.config_path, this.config.encode(true)) ! error("Failed to save file: " + this.config_path)
