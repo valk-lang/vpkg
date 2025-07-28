@@ -14,6 +14,7 @@ class Package {
     repo_dir: String
     src: Source
     ver: Version
+    mask: ?Mask (null)
     conf: ?json:Value (null)
 
     static fn init(project: Project, name: String, version: ?String) Package {
@@ -28,7 +29,7 @@ class Package {
         // Find version
         if !isset(ver) {
             ver = src.get_highest_version(mask) ! {
-                if isset(mask) : error("Package '%name' has no versions matching: " + mask.original)
+                if isset(mask) : error("Package '%name' has no versions matching: " + mask.name)
                 error("Package '%name' hasnt created any versions yet")
             }
         }
@@ -36,6 +37,7 @@ class Package {
         let pkg_dir = fs:add(project.vendor_dir, src.name)
         if !fs:exists(pkg_dir) : fs:mkdir(pkg_dir) _
         let ver_dir = fs:add(pkg_dir, ver.name)
+        // if isset(mask) : ver_dir = fs:add(pkg_dir, mask.name)
 
         return Package {
             project: project
@@ -47,6 +49,7 @@ class Package {
             repo_dir: fs:add(cache_repo_dir(), src.name)
             src: src
             ver: ver
+            mask: mask
         }
     }
 

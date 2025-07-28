@@ -39,7 +39,15 @@ class Project {
             if n != pkg.name : error("Failed to add package to config. Name already used: " + name)
         }
         dep.set_string("src", pkg.name)
-        dep.set_string("version", pkg.ver.name)
+
+        let mask = pkg.mask
+        if isset(mask) {
+            dep.set_string("version", mask.name)
+            dep.set_string("use", pkg.ver.name)
+        } else {
+            dep.set_string("version", pkg.ver.name)
+            dep.remove("use")
+        }
 
         fs:write(this.config_path, this.config.encode(true)) ! error("Failed to save file: " + this.config_path)
     }

@@ -1,6 +1,6 @@
 
 class Mask {
-    original: String
+    name: String
     n1: uint (0)
     n2: uint (0)
     n3: uint (0)
@@ -21,7 +21,7 @@ class Mask {
         let n3_any: bool = (split.get(2) !? "x") == "x"
 
         return Mask {
-            original: version
+            name: version
             n1: n1
             n2: n2
             n3: n3
@@ -34,9 +34,12 @@ class Mask {
     static fn is_mask(version: String) bool {
         let split = version.split(".")
         if split.length > 3 : return false
+        let contains_x = false
         each split as part {
+            if part == "x" : contains_x = true
             if !part.is_integer() && part != "x" : return false
         }
+        if !contains_x : return false
         return true
     }
 
