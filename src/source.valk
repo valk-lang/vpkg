@@ -72,10 +72,11 @@ class Source {
         return versions
     }
 
-    fn get_highest_version() Version !none {
+    fn get_highest_version(mask: ?Mask) Version !none {
         let vv = this.get_versions()
         let high : ?Version = null
         each vv as v {
+            if isset(mask) && !mask.is_compat(v) : continue
             if !isset(high) {
                 high = v
                 continue

@@ -22,10 +22,15 @@ class Package {
 
         // Version
         let ver : ?Version = null
-        if isset(version) && version != "_" : ver = Version.new(version) ! error("Invalid version syntax: " + version)
+        let mask : ?Mask = null
+        if isset(version) && Mask.is_mask(version) : mask = Mask.new(version)
+        if isset(version) && !isset(mask) && version != "_" : ver = Version.new(version) ! error("Invalid version syntax: " + version)
         // Find version
         if !isset(ver) {
-            ver = src.get_highest_version() ! error("Package '%name' hasnt created any versions yet")
+            ver = src.get_highest_version(mask) ! {
+                if isset(mask) : error("Package '%name' has no versions matching: " + mask.original)
+                error("Package '%name' hasnt created any versions yet")
+            }
         }
 
         let pkg_dir = fs:add(project.vendor_dir, src.name)

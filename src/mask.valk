@@ -1,0 +1,49 @@
+
+class Mask {
+    original: String
+    n1: uint (0)
+    n2: uint (0)
+    n3: uint (0)
+    n1_any: bool
+    n2_any: bool
+    n3_any: bool
+
+    static fn new(version: String) Mask {
+
+        let split = version.split(".")
+        if split.length > 3 : error("Invalid mask")
+
+        let n1: uint = (split.get(0) !? "0").to_uint() !? 0
+        let n2: uint = (split.get(1) !? "0").to_uint() !? 0
+        let n3: uint = (split.get(2) !? "0").to_uint() !? 0
+        let n1_any: bool = (split.get(0) !? "0") == "x"
+        let n2_any: bool = (split.get(1) !? "x") == "x"
+        let n3_any: bool = (split.get(2) !? "x") == "x"
+
+        return Mask {
+            original: version
+            n1: n1
+            n2: n2
+            n3: n3
+            n1_any: n1_any
+            n2_any: n2_any
+            n3_any: n3_any
+        }
+    }
+
+    static fn is_mask(version: String) bool {
+        let split = version.split(".")
+        if split.length > 3 : return false
+        each split as part {
+            if !part.is_integer() && part != "x" : return false
+        }
+        return true
+    }
+
+    fn is_compat(v: Version) bool {
+        if !this.n1_any && this.n1 != v.n1 : return false
+        if !this.n2_any && this.n2 != v.n2 : return false
+        if !this.n3_any && this.n3 != v.n3 : return false
+        return true
+    }
+}

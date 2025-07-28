@@ -7,7 +7,7 @@
         },
         "test": {
             "src": "github.com/valk-lang/valk",
-            "version": "main"
+            "version": "0.0.4"
         }
     }
 }
