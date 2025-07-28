@@ -28,7 +28,19 @@ class Project {
         }
     }
 
-    fn add_pkg_to_config(pkg: Package, name: String) {
+    fn add_pkg_to_config(pkg: Package, name: ?String) {
+
+        if !isset(name) {
+            let n = pkg.src.repo_name
+            let i : uint = 0
+            let len = n.length
+            while i < len {
+                let ch = n.get(i++)
+                if ch.is_alpha() || ch == '_' || (i > 1 && ch.is_number()) : continue
+                error("Please provide a package alias because the default is not a valid package name: " + n)
+            }
+            name = n
+        }
 
         let deps = this.config.get("dependencies")
         let exists = deps.has(name)

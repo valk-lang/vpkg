@@ -37,7 +37,6 @@ class Package {
         let pkg_dir = fs:add(project.vendor_dir, src.name)
         if !fs:exists(pkg_dir) : fs:mkdir(pkg_dir) _
         let ver_dir = fs:add(pkg_dir, ver.name)
-        // if isset(mask) : ver_dir = fs:add(pkg_dir, mask.name)
 
         return Package {
             project: project

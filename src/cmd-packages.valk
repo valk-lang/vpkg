@@ -19,7 +19,7 @@ fn cmd_package_install(args: Array[String], options: Map[String]) {
     let install_pkg_name = args.get(0) !? null
     if isset(install_pkg_name) {
         // Version to install
-        let install_version = args.get(1) !? null
+        let install_version = args.get(1) !? "x"
         let alias = args.get(2) !? null
         // Package
         let pkg = Package.init(p, install_pkg_name, install_version)
@@ -30,7 +30,7 @@ fn cmd_package_install(args: Array[String], options: Map[String]) {
         if !pkg.installed() : pkg.install()
 
         // Add to config
-        p.add_pkg_to_config(pkg, alias ?? pkg.src.repo_name)
+        p.add_pkg_to_config(pkg, alias)
 
         // Success
         if ansi:supported() : println("# Package installed: " + pkg.id.to(String).ansi.green())

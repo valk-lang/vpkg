@@ -1,9 +1,9 @@
 {
     "valk-version": "0.0.3",
     "dependencies": {
-        "test": {
+        "valk": {
             "src": "github.com/valk-lang/valk",
-            "version": "0.0.x",
+            "version": "x",
             "use": "0.0.4"
         }
     }
