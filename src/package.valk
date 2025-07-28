@@ -1,0 +1,41 @@
+
+use valk:json
+use valk:http
+
+class Package {
+    id: String
+    s: Source
+    v: Version
+    conf: ?json:Value (null)
+
+    static fn init(s: Source, v: Version) Package {
+        return Package {
+            id: s.name + "/" + v.name
+            s: s
+            v: v
+        }
+    }
+
+    fn installed() bool {
+        return true
+    }
+
+    fn config() json:Value {
+        let conf = this.conf
+        if isset(conf) : return conf
+        let conf_str = ""
+        let s = this.s
+        let v = this.v
+        if s.type == SRC.github {
+            let url = "https://raw.githubusercontent.com/" + s.user_name + "/" + s.repo_name + "/" + v.hash + "/valk.json"
+            println("# Loading '%v' from '%url'")
+            let res = http:request("GET", url) ! error("Unable to load data from: " + url)
+            conf_str = res.body
+        }
+        if conf_str.is_empty() : error("Unhandled source while loading package config: " + s)
+        conf = json:decode(conf_str) ! error("Invalid json syntax in 'valk.json' for version '%v'")
+
+        this.conf = conf
+        return conf
+    }
+}

@@ -1,37 +1,44 @@
 
 class Version {
-    full: String
-    n1: uint
-    n2: uint
-    n3: uint
+    name: String
+    hash: String ("")
+    n1: uint (0)
+    n2: uint (0)
+    n3: uint (0)
+    can_compare: bool (false)
 
     static fn new(v: String) SELF !invalid {
-        if v.starts_with("v") || v.starts_with("V") : v = v.substr(1, v.length)
+        if v.starts_with("v") || v.starts_with("V") : v = v.part(1, v.length)
+
+        let res = Version {
+            name: v
+        }
+
         let parts = v.split(".")
-        if parts.length != 3 : throw invalid
-        each parts as part, i {
-            if !part.is_integer() : throw invalid
+        if parts.length == 3 {
+            let all_ints = true
+            each parts as part : if !part.is_integer() : all_ints = false
+            if all_ints {
+                res.n1 (parts.get(0) !? "0").to_uint() !? 0
+                res.n2 (parts.get(1) !? "0").to_uint() !? 0
+                res.n3 (parts.get(2) !? "0").to_uint() !? 0
+                res.can_compare = true
+            }
         }
-        let p1 = parts.get(0) ! throw invalid
-        let p2 = parts.get(1) ! throw invalid
-        let p3 = parts.get(2) ! throw invalid
-        return Version {
-            full: v
-            n1: p1.to_uint() ! throw invalid
-            n2: p2.to_uint() ! throw invalid
-            n3: p3.to_uint() ! throw invalid
-        }
+        return res
     }
 
     fn str() String $to {
-        return this.full
+        return this.name
     }
 
     // Compare
     fn eq(v: Version) bool $eq {
+        if this.name == v.name : return true
         return this.n1 == v.n1 && this.n2 == v.n2 && this.n3 == v.n3
     }
     fn lt(v: Version) bool $lt {
+        if !this.can_compare : return true
         if this.n1 < v.n1 : return true
         if this.n2 < v.n2 : return true
         if this.n3 < v.n3 : return true

@@ -14,12 +14,12 @@ class Source {
 
     static fn new(name: String) SELF {
         if name.starts_with("github.com/") {
-            name = name.substr("github.com/".length, name.length)
-            let split = name.split("/")
+            let project = name.part("github.com/".length, name.length)
+            let split = project.split("/")
             if split.length != 2 : error("Invalid github package name: " + name)
             let user = split.get(0) ! error("Missing user name")
             let repo = split.get(1) ! error("Missing repo name")
-            if !github_exists(user, repo) : error("Github repository does not exist")
+            // if !github_exists(user, repo) : error("Github repository does not exist")
             return SELF {
                 type: SRC.github
                 name: name
@@ -30,20 +30,45 @@ class Source {
         error("Unknown source: " + name + ", package names must be with 'github.com/'.")
     }
 
+    fn str() String $to {
+        return this.name
+    }
+
     fn get_versions() Array[Version] {
         let vv = this.versions
         if isset(vv) : return vv
+        // Check cache
+        let cache = Cache.get()
+        let cache_vv = cache.get_versions(this.name) !? null
+        if isset(cache_vv) : return cache_vv
+        // 
         let versions = array[Version]{}
         let data = json:new_array()
         if this.type == SRC.github {
-            data = github_req("GET", "/repos/" + this.user_name + "/" + this.repo_name + "/tags") !? data
+            data = github_req("GET", "/repos/" + this.user_name + "/" + this.repo_name + "/tags") ! {
+                error("Invalid package source: " + this.name)
+            }
         }
         let tags = data.array()
         each tags as tag {
+
             let name = tag.get("name")
-            versions.push(Version.new(name) ! continue)
+            let v = Version.new(name) ! continue
+            let hash = tag.get("commit").get("sha").string()
+            if hash.is_empty() {
+                warn("Missing version commit hash for version: " + name)
+                continue
+            }
+            v.hash = hash
+            versions.push(v)
         }
         this.versions = versions
+
+        cache.set_versions(this.name, versions)
+        // versions.sort(fn(v1: Version, v2: Version) bool {
+        //     return v1 < v2
+        // })
+        versions.sort()
         return versions
     }
 

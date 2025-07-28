@@ -4,12 +4,14 @@ use valk:http
 
 fn github_req(method: String, path: String) json:Value !fail {
     let url = "https://api.github.com" + path
+    println("REQ : %url")
     let options = http:Options{}
     options.set_header("User-Agent", "Vpkg package manager " + #STR(VERSION))
     let res = http:request(method, url, options) ! {
         println("# Request failed: " + url)
         throw fail
     }
+    if res.status != 200 : throw fail
     // println("URL: " + url)
     // println("Status: " + res.status)
     // println("Response: " + res.body)

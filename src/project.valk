@@ -1,0 +1,9 @@
+
+class Project {
+    packages: Map[Package] (map[Package]{})
+
+    static fn new() SELF {
+        return SELF {
+        }
+    }
+}

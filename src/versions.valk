@@ -20,8 +20,8 @@ fn get_versions() Versions {
     let valk_latest : ?String = conf.get("vpkg-latest").string()
     let last_update = conf.get("last-update").int().to(uint)
 
-    if vpkg_latest.empty() : vpkg_latest = #STR(VERSION)
-    if valk_latest.empty() : valk_latest = null
+    if vpkg_latest.is_empty() : vpkg_latest = #STR(VERSION)
+    if valk_latest.is_empty() : valk_latest = null
 
     let now = time:microtime()
     let one_day : uint = 1000 * 1000 * 60 * 60 * 24
@@ -69,11 +69,11 @@ fn get_version_from_config() String {
 
     let json = json:decode(data) ! error("Invalid json in: " + path)
     let version = json.get("valk-version").string()
-    if version.empty() : error("No version specified in: " + path)
+    if version.is_empty() : error("No version specified in: " + path)
     return version
 }
 
 fn is_valid_version(v: String) bool {
-    let ver = Version.new(v) ! return false
+    Version.new(v) ! return false
     return true
 }

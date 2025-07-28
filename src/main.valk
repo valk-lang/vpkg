@@ -10,9 +10,9 @@ fn main(args: Array[String]) {
 
     let options = extract_options(args)
 
-    args.remove_index(0)
+    args.remove(0)
     let action = args.get(0) ! help(0)
-    args.remove_index(0)
+    args.remove(0)
 
     if action == "use" {
         cmd_use(args, options)
@@ -64,7 +64,7 @@ fn extract_options(args: Array[String]) Array[String] {
     each args as arg, i {
         if arg.starts_with("-") {
             options.push(arg)
-            args.remove_index(i--)
+            args.remove(i--)
         }
     }
     return options
