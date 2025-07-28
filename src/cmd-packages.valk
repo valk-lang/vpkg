@@ -2,15 +2,35 @@
 use valk:ansi
 
 fn help_intro_pkg_commands() {
-    println(emo("📦", "#") + " Package commands (WIP)");
+    println(emo("📦", "#") + " Package commands");
     print("\n")
     println(" vpkg install         Install pacakages defined in the valk.json config");
     println(" vpkg install {pkg}   Install pacakage");
     println(" vpkg remove {pkg}    Remove pacakage");
 }
 
+fn help_pkg_command(code: i32) $exit {
+    println(emo("📦", "#") + " Package commands");
+    print("\n")
+    println(" # Install pacakages defined in the valk.json config");
+    println(" vpkg install");
+    print("\n")
+    println(" # Install a pacakage");
+    println(" vpkg install {pkg} [{version}] [{alias}]");
+    print("\n")
+    println(" # Remove a pacakage");
+    println(" vpkg remove {pkg}");
+    print("\n")
+    exit(code)
+}
 
-fn cmd_package_install(args: Array[String], options: Map[String]) {
+
+fn cmd_package_install(args: Array[String], options: Array[String]) {
+
+    if options.contains("-h") || options.contains("--help") {
+        help_pkg_command(0)
+    }
+    return
 
     // Project
     let p = Project.new()
@@ -39,5 +59,5 @@ fn cmd_package_install(args: Array[String], options: Map[String]) {
     }
 }
 
-fn cmd_package_remove(args: Array[String], options: Map[String]) {
+fn cmd_package_remove(args: Array[String], options: Array[String]) {
 }

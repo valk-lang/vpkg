@@ -24,7 +24,7 @@ fn main(args: Array[String]) {
     } else if action == "version" {
         println(#STR(VERSION))
     } else {
-        println("Unknown action: '" + action + "'")
+        println("Unknown command: '" + action + "'")
         exit(1)
     }
 }
