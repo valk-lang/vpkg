@@ -1,10 +1,26 @@
 
 use valk:json
 use valk:http
+use valk:time
 
 fn github_req(method: String, path: String) json:Value !fail {
     let url = "https://api.github.com" + path
-    println("REQ : %url")
+
+    let cache = Cache.get()
+    let reqs = cache.data.get("requests")
+    let id = method + "::" + url
+    let req = reqs.get(id)
+    let when = req.get("when").int().to(uint)
+    let body = req.get("body").string()
+    let now = time:mstime()
+    if now - when < 10 * 60 * 1000 && !body.is_empty() {
+        let data = json:decode(body) !? null
+        if isset(data) {
+            return data
+        }
+    }
+
+    println("REQUEST : %method %url")
     let options = http:Options{}
     options.set_header("User-Agent", "Vpkg package manager " + #STR(VERSION))
     let res = http:request(method, url, options) ! {
@@ -12,10 +28,13 @@ fn github_req(method: String, path: String) json:Value !fail {
         throw fail
     }
     if res.status != 200 : throw fail
-    // println("URL: " + url)
-    // println("Status: " + res.status)
-    // println("Response: " + res.body)
+    //
     let data = json:decode(res.body) ! throw fail
+    // Update cache
+    req.set("when", json:new_int(now.to(int)))
+    req.set("body", json:new_string(res.body))
+    cache.save()
+    //
     return data
 }
 

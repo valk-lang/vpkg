@@ -38,9 +38,9 @@ class Source {
         let vv = this.versions
         if isset(vv) : return vv
         // Check cache
-        let cache = Cache.get()
-        let cache_vv = cache.get_versions(this.name) !? null
-        if isset(cache_vv) : return cache_vv
+        // let cache = Cache.get()
+        // let cache_vv = cache.get_versions(this.name) !? null
+        // if isset(cache_vv) : return cache_vv
         // 
         let versions = array[Version]{}
         let data = json:new_array()
@@ -64,7 +64,7 @@ class Source {
         }
         this.versions = versions
 
-        cache.set_versions(this.name, versions)
+        // cache.set_versions(this.name, versions)
         // versions.sort(fn(v1: Version, v2: Version) bool {
         //     return v1 < v2
         // })

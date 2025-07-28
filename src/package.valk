@@ -40,7 +40,9 @@ class Package {
     }
 
     fn installed() bool {
-        return true
+        return fs:exists(this.path)
+    }
+    fn install() {
     }
 
     fn config() json:Value {
@@ -60,9 +62,5 @@ class Package {
 
         this.conf = conf
         return conf
-    }
-
-    fn install() bool {
-        return true
     }
 }
