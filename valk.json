@@ -2,8 +2,12 @@
     "valk-version": "0.0.3",
     "dependencies": {
         "v": {
-            "name": "github.com/valk-lang/valk",
+            "src": "github.com/valk-lang/valk",
             "version": "0.0.4"
+        },
+        "test": {
+            "src": "github.com/valk-lang/valk",
+            "version": "main"
         }
     }
 }

@@ -22,12 +22,9 @@ class Package {
 
         // Version
         let ver : ?Version = null
-        if isset(version) : ver = Version.new(version) ! error("Invalid version syntax: " + version)
-        // Validate version
-        let versions = src.get_versions()
-        if isset(ver) {
-            if !versions.contains(ver) : error("Version '%ver' does not exist")
-        } else {
+        if isset(version) && version != "_" : ver = Version.new(version) ! error("Invalid version syntax: " + version)
+        // Find version
+        if !isset(ver) {
             ver = src.get_highest_version() ! error("Package '%name' hasnt created any versions yet")
         }
 
@@ -82,10 +79,9 @@ class Package {
     fn install_repo() {
         let dir = this.repo_dir
         if fs:exists(dir) : return
-        let repo_dir = cache_repo_dir()
         let url = this.clone_url()
         let cmd = "git clone %url %dir"
-        let code, out = core:exec(cmd) ! error("Failed to clone package: %cmd")
+        core:exec(cmd) ! error("Failed to clone package: %cmd")
     }
 
     fn clone_url() String {

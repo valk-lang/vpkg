@@ -31,23 +31,15 @@ class Project {
     fn add_pkg_to_config(pkg: Package, name: String) {
 
         let deps = this.config.get("dependencies")
-        if deps.has(name) {
-            let dep = deps.get(name)
-            if dep.is_object() {
-                let n = dep.get("name").string()
-                if n != pkg.name : error("Failed to add package to config. Name already used: " + name)
+        let exists = deps.has(name)
 
-                dep.set_string("name", pkg.name)
-                dep.set_string("version", pkg.ver.name)
-            } else {
-                let n = dep.string()
-                if !n.starts_with(pkg.name + "|") : error("Failed to add package to config. Name already used: " + name)
-
-                deps.set_string(name, pkg.name + "|" + pkg.ver.name)
-            }
-        } else {
-            deps.set_string(name, pkg.name + "|" + pkg.ver.name)
+        let dep = deps.get(name)
+        if exists {
+            let n = dep.get("src").string()
+            if n != pkg.name : error("Failed to add package to config. Name already used: " + name)
         }
+        dep.set_string("src", pkg.name)
+        dep.set_string("version", pkg.ver.name)
 
         fs:write(this.config_path, this.config.encode(true)) ! error("Failed to save file: " + this.config_path)
     }
