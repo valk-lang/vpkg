@@ -31,7 +31,7 @@ class Package {
             ver = src.get_highest_version() ! error("Package '%name' hasnt created any versions yet")
         }
 
-        let pkg_dir = fs:add(project.dir, src.name)
+        let pkg_dir = fs:add(project.vendor_dir, src.name)
         if !fs:exists(pkg_dir) : fs:mkdir(pkg_dir) _
         let ver_dir = fs:add(pkg_dir, ver.name)
 

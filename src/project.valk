@@ -1,11 +1,54 @@
 
+use valk:fs
+use valk:json
+
 class Project {
     dir: String
+    vendor_dir: String
+    config_path: String
+    config: json:Value
     packages: Map[Package] (map[Package]{})
 
     static fn new() SELF {
+        let dir = fs:cwd()
+        if !fs:is_dir(dir) : fs:mkdir(dir) ! error("Failed to create directory: " + dir)
+        let vendor_dir = fs:add(dir, "vendor")
+        if !fs:is_dir(vendor_dir) : fs:mkdir(vendor_dir) ! error("Failed to create directory: " + vendor_dir)
+        let config_path = fs:add(dir, "valk.json")
+        if !fs:exists(config_path) : error("No 'valk.json' config not found: " + config_path)
+
+        let str = fs:read(config_path) !? "{}"
+        let data = json:decode(str) ! error("Invalid json syntax in '%config_path'")
+
         return SELF {
-            dir: vendor_dir()
+            dir: dir
+            vendor_dir: vendor_dir
+            config_path: config_path
+            config: data
         }
+    }
+
+    fn add_pkg_to_config(pkg: Package, name: String) {
+
+        let deps = this.config.get("dependencies")
+        if deps.has(name) {
+            let dep = deps.get(name)
+            if dep.is_object() {
+                let n = dep.get("name").string()
+                if n != pkg.name : error("Failed to add package to config. Name already used: " + name)
+
+                dep.set_string("name", pkg.name)
+                dep.set_string("version", pkg.ver.name)
+            } else {
+                let n = dep.string()
+                if !n.starts_with(pkg.name + "|") : error("Failed to add package to config. Name already used: " + name)
+
+                deps.set_string(name, pkg.name + "|" + pkg.ver.name)
+            }
+        } else {
+            deps.set_string(name, pkg.name + "|" + pkg.ver.name)
+        }
+
+        fs:write(this.config_path, this.config.encode(true)) ! error("Failed to save file: " + this.config_path)
     }
 }

@@ -1,4 +1,6 @@
 
+use valk:ansi
+
 fn help_intro_pkg_commands() {
     println(emo("📦", "#") + " Package commands (WIP)");
     print("\n")
@@ -18,15 +20,22 @@ fn cmd_package_install(args: Array[String], options: Map[String]) {
     if isset(install_pkg_name) {
         // Version to install
         let install_version = args.get(1) !? null
+        let alias = args.get(2) !? null
         // Package
         let pkg = Package.init(p, install_pkg_name, install_version)
 
         p.packages.set(pkg.id, pkg)
 
         // Check if installed
-        if !pkg.installed() {
-            pkg.install()
-        }
+        if !pkg.installed() : pkg.install()
+
+        // Add to config
+        p.add_pkg_to_config(pkg, alias ?? pkg.src.repo_name)
+
+        // Success
+        if ansi:supported() : println("# Package installed: " + pkg.id.to(String).ansi.green())
+        else : println("# Package installed: " + pkg.id)
+        return
     }
 }
 

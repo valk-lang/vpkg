@@ -52,8 +52,3 @@ fn cache_repo_dir() String {
     if !fs:is_dir(dir) : fs:mkdir(dir) ! error("Failed to create directory: " + dir)
     return dir
 }
-fn vendor_dir() String {
-    let dir = fs:add(fs:cwd(), "vendor")
-    if !fs:is_dir(dir) : fs:mkdir(dir) ! error("Failed to create directory: " + dir)
-    return dir
-}
