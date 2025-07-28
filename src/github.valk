@@ -8,7 +8,7 @@ fn github_req(method: String, path: String) json:Value !fail {
 
     let cache = Cache.get()
     let reqs = cache.data.get("requests")
-    let id = method + "::" + url
+    let id = #STR(VERSION) + ":%method:%url"
     let req = reqs.get(id)
     let when = req.get("when").int().to(uint)
     let body = req.get("body").string()

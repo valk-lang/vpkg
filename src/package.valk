@@ -2,13 +2,16 @@
 use valk:json
 use valk:http
 use valk:fs
+use valk:core
 
 class Package {
     project: Project
     name: String
     dot_name: String
     id: String
-    path: String
+    pkg_dir: String
+    ver_dir: String
+    repo_dir: String
     src: Source
     ver: Version
     conf: ?json:Value (null)
@@ -28,21 +31,65 @@ class Package {
             ver = src.get_highest_version() ! error("Package '%name' hasnt created any versions yet")
         }
 
+        let pkg_dir = fs:add(project.dir, src.name)
+        if !fs:exists(pkg_dir) : fs:mkdir(pkg_dir) _
+        let ver_dir = fs:add(pkg_dir, ver.name)
+
         return Package {
             project: project
             name: name
             dot_name: src.name
             id: fs:add(src.name, ver.name)
-            path: fs:add(fs:add(project.dir, src.name), ver.name)
+            pkg_dir: pkg_dir
+            ver_dir: ver_dir
+            repo_dir: fs:add(cache_repo_dir(), src.name)
             src: src
             ver: ver
         }
     }
 
     fn installed() bool {
-        return fs:exists(this.path)
+        return fs:exists(this.ver_dir)
     }
     fn install() {
+        this.install_repo()
+        //
+        let repo_dir = this.repo_dir
+        let dest_dir = this.ver_dir
+        let vname = this.ver.name
+
+        // Fetch
+        let cmd = "cd %repo_dir && git fetch"
+        let code, out = core:exec(cmd) ! error("Exec command failed: %cmd")
+        if code == 127 : error("Git is not installed")
+        if code != 0 : error("Failed to fetch latest package version: %cmd")
+
+        // Checkout version
+        cmd = "cd %repo_dir && git checkout %vname"
+        (code, out) = core:exec(cmd) ! error("Exec command failed: %cmd")
+        if code != 0 : error("Package version not found: %{this.ver.name}")
+
+        // Pull
+        cmd = "cd %repo_dir && git pull origin %vname"
+        (code, out) = core:exec(cmd) ! error("Exec command failed: %cmd")
+        if code != 0 : error("Package version not found: %{this.ver.name}")
+
+        //
+        cmd = "cp -r %repo_dir %dest_dir"
+        core:exec(cmd) ! error("Unable to copy files: %cmd")
+        println(cmd)
+    }
+    fn install_repo() {
+        let dir = this.repo_dir
+        if fs:exists(dir) : return
+        let repo_dir = cache_repo_dir()
+        let url = this.clone_url()
+        let cmd = "git clone %url %dir"
+        let code, out = core:exec(cmd) ! error("Failed to clone package: %cmd")
+    }
+
+    fn clone_url() String {
+        return "https://github.com/%{this.src.user_name}/%{this.src.repo_name}.git"
     }
 
     fn config() json:Value {

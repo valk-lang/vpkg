@@ -7,11 +7,12 @@ class Version {
     n3: uint (0)
     can_compare: bool (false)
 
-    static fn new(v: String) SELF !invalid {
+    static fn new(name: String) SELF !invalid {
+        let v = name
         if v.starts_with("v") || v.starts_with("V") : v = v.part(1, v.length)
 
         let res = Version {
-            name: v
+            name: name
         }
 
         let parts = v.split(".")
