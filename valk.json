@@ -4,7 +4,7 @@
         "example": {
             "src": "github.com/valk-lang/pkg-example",
             "version": "x.x.x",
-            "lock": "0.0.1"
+            "lock": "0.0.2"
         }
     }
 }

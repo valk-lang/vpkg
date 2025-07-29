@@ -16,6 +16,11 @@ dev: $(SRC)
 win: $(SRC)
 	$(vc) build src/*.valk -o /mnt/c/www/vpkg.exe $(DEFS) --target win-x64
 
+test: vpkg
+	$(vc) build debug/example.valk -o debug/example .
+	./debug/example
+
+
 # Build dists
 
 dist-linux-x64:
