@@ -3,8 +3,7 @@
     "dependencies": {
         "valk": {
             "src": "github.com/valk-lang/valk",
-            "version": "x",
-            "lock": "0.0.4"
+            "version": "0.0.4"
         }
     }
 }

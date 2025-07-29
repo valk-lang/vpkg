@@ -30,7 +30,6 @@ fn cmd_package_install(args: Array[String], options: Array[String]) {
     if options.contains("-h") || options.contains("--help") {
         help_pkg_command(0)
     }
-    return
 
     // Project
     let p = Project.new()
