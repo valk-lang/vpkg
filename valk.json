@@ -1,9 +1,4 @@
 {
     "use": "0.0.5",
-    "dependencies": {
-        "valk": {
-            "src": "github.com/valk-lang/valk",
-            "version": "0.0.4"
-        }
-    }
+    "dependencies": {}
 }

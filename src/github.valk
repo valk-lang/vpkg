@@ -20,7 +20,7 @@ fn github_req(method: String, path: String) json:Value !fail {
         }
     }
 
-    println("REQUEST : %method %url")
+    // println("REQUEST : %method %url")
     let options = http:Options{}
     options.set_header("User-Agent", "Vpkg package manager " + #STR(VERSION))
     let res = http:request(method, url, options) ! {
