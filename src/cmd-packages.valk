@@ -56,6 +56,9 @@ fn cmd_package_install(args: Array[String], options: Array[String]) {
         else : println("# Package installed: " + pkg.id)
         return
     }
+
+    // Install all
+    p.install_packages()
 }
 
 fn cmd_package_remove(args: Array[String], options: Array[String]) {

@@ -11,10 +11,9 @@ class Project {
 
     static fn new() SELF {
         let dir = fs:cwd()
-        if !fs:is_dir(dir) : fs:mkdir(dir) ! error("Failed to create directory: " + dir)
         let vendor_dir = fs:add(dir, "vendor")
         if !fs:is_dir(vendor_dir) : fs:mkdir(vendor_dir) ! error("Failed to create directory: " + vendor_dir)
-        let config_path = fs:add(dir, "valk.json")
+        let config_path = SELF.get_config_path()
         if !fs:exists(config_path) : error("No 'valk.json' config not found: " + config_path)
 
         let str = fs:read(config_path) !? "{}"
@@ -26,6 +25,18 @@ class Project {
             config_path: config_path
             config: data
         }
+    }
+
+    static fn get_config_path() String {
+        let dir = fs:cwd()
+        if !fs:is_dir(dir) : fs:mkdir(dir) ! error("Failed to create directory: " + dir)
+        return fs:add(dir, "valk.json")
+    }
+
+    static fn init_config() {
+        let path = SELF.get_config_path()
+        if !fs:exists(path) : fs:write(path, "{}") ! error("Failed to create: " + path)
+        else : println("# Project already has a 'valk.json' config")
     }
 
     fn add_pkg_to_config(pkg: Package, name: ?String) {
@@ -62,5 +73,32 @@ class Project {
         }
 
         fs:write(this.config_path, this.config.encode(true)) ! error("Failed to save file: " + this.config_path)
+    }
+
+    fn install_packages() {
+        let deps = this.config.get("dependencies").map()
+
+        if deps.length == 0 {
+            println("# This project has no dependencies")
+            return
+        }
+
+        each deps as dep {
+            let name = dep.get("src").string()
+            let v = dep.get("version").string()
+            if dep.has("lock") {
+                v = dep.get("lock").string()
+            }
+            if name.is_empty() : error("Valk.json invalid dependency 'src' -> '%name'")
+            if v.is_empty() : error("Valk.json invalid dependency 'version' -> '%v'")
+
+            let pkg = Package.init(this, name, v)
+            if !pkg.installed() {
+                println("> Installing: %name | %v")
+                pkg.install()
+            }
+        }
+
+        println("# All dependencies have been installed")
     }
 }

@@ -79,9 +79,13 @@ class Package {
         if code != 0 : error("Package version not found: %{this.ver.name}")
 
         //
-        cmd = "cp -r %repo_dir %dest_dir"
-        core:exec(cmd) ! error("Unable to copy files: %cmd")
-        println(cmd)
+        let files = fs:files_in(repo_dir, false)
+        if !fs:exists(dest_dir) : fs:mkdir(dest_dir) _
+        each files as file {
+            let fn = fs:basename(file)
+            if fn == ".git" : continue
+            fs:copy(file, fs:add(dest_dir, fn), true) _
+        }
     }
     fn install_repo() {
         let dir = this.repo_dir

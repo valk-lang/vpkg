@@ -15,6 +15,8 @@ fn main(args: Array[String]) {
 
     if action == "use" {
         cmd_use(args, options)
+    } else if action == "init" {
+        Project.init_config()
     } else if action == "install" {
         cmd_package_install(args, options)
     } else if action == "remove" {
@@ -34,6 +36,10 @@ fn help(code: i32) $exit {
     println("------------------------------")
     println(" Valk Package Manager " + #STR(VERSION))
     println("------------------------------")
+
+    // Packages
+    print("\n")
+    println("  vpkg init           Init valk.json config")
 
     // Packages
     print("\n")
