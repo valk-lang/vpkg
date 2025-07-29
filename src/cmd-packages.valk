@@ -38,7 +38,7 @@ fn cmd_package_install(args: Array[String], options: Array[String]) {
     let install_pkg_name = args.get(0) !? null
     if isset(install_pkg_name) {
         // Version to install
-        let install_version = args.get(1) !? "x"
+        let install_version = args.get(1) !? null
         let alias = args.get(2) !? null
         // Package
         let pkg = Package.init(p, install_pkg_name, install_version)

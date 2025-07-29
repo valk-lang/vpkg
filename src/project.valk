@@ -43,13 +43,11 @@ class Project {
 
         if !isset(name) {
             let n = pkg.src.repo_name
-            let i : uint = 0
-            let len = n.length
-            while i < len {
-                let ch = n.get(i++)
-                if ch.is_alpha() || ch == '_' || (i > 1 && ch.is_number()) : continue
-                error("Please provide a package alias because the default is not a valid package name: " + n)
+            let pkg_conf = pkg.config()
+            if pkg_conf.has("name") && is_valid_pkg_name(pkg_conf.get("name").string()) {
+                n = pkg_conf.get("name").string()
             }
+            if !is_valid_pkg_name(n) : error("Please provide a package alias because the default is not a valid package name: " + n)
             name = n
         }
 
@@ -101,4 +99,16 @@ class Project {
 
         println("# All dependencies have been installed")
     }
+}
+
+fn is_valid_pkg_name(n: String) bool {
+    if n.is_empty() : return false
+    let i : uint = 0
+    let len = n.length
+    while i < len {
+        let ch = n.get(i++)
+        if ch.is_alpha() || ch == '_' || (i > 1 && ch.is_number()) : continue
+        return false
+    }
+    return true
 }

@@ -20,17 +20,22 @@ class Package {
     static fn init(project: Project, name: String, version: ?String) Package {
 
         let src = Source.new(name)
+        let user_defined_version = isset(version)
 
         // Version
         let ver : ?Version = null
         let mask : ?Mask = null
+        if !isset(version) : mask = Mask.new("x.x.x")
         if isset(version) && Mask.is_mask(version) : mask = Mask.new(version)
         if isset(version) && !isset(mask) && version != "_" : ver = Version.new(version) ! error("Invalid version syntax: " + version)
         // Find version
         if !isset(ver) {
             ver = src.get_highest_version(mask) ! {
-                if isset(mask) : error("Package '%name' has no versions matching: " + mask.name)
-                error("Package '%name' hasnt created any versions yet")
+                let vv = src.get_versions()
+                if vv.length == 0 : error("Package '%name' hasnt created any versions yet")
+                if user_defined_version && isset(mask) : error("Package '%name' has no versions matching: " + mask.name)
+                if isset(version) : error("Version '%version' not found")
+                error("Package '%name' could not find a version to install")
             }
         }
 
@@ -102,17 +107,10 @@ class Package {
     fn config() json:Value {
         let conf = this.conf
         if isset(conf) : return conf
-        let conf_str = ""
-        let s = this.src
-        let v = this.ver
-        if s.type == SRC.github {
-            let url = "https://raw.githubusercontent.com/" + s.user_name + "/" + s.repo_name + "/" + v.hash + "/valk.json"
-            println("# Loading '%v' from '%url'")
-            let res = http:request("GET", url) ! error("Unable to load data from: " + url)
-            conf_str = res.body
-        }
-        if conf_str.is_empty() : error("Unhandled source while loading package config: " + s)
-        conf = json:decode(conf_str) ! error("Invalid json syntax in 'valk.json' for version '%v'")
+
+        let path = fs:add(this.repo_dir, "valk.json")
+        let str = fs:read(path) ! error("Package is missing a valk.json config: " + path)
+        conf = json:decode(str) ! error("Invalid json syntax in config: " + path)
 
         this.conf = conf
         return conf
