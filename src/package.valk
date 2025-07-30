@@ -25,9 +25,19 @@ class Package {
         // Version
         let ver : ?Version = null
         let mask : ?Mask = null
-        if !isset(version) : mask = Mask.new("x.x.x")
-        if isset(version) && Mask.is_mask(version) : mask = Mask.new(version)
-        if isset(version) && !isset(mask) && version != "_" : ver = Version.new(version) ! error("Invalid version syntax: " + version)
+        if !isset(version) {
+            // Generate mask based on latest version
+            let high = src.get_highest_version(null) !? null
+            if isset(high) {
+                ver = high
+                mask = Mask.new(high.name)
+                mask.n3_any = true
+                mask.name = mask.name.rtrim(mask.n3) + "x"
+            }
+        } else {
+            if Mask.is_mask(version) : mask = Mask.new(version)
+            if !isset(mask) && version != "_" : ver = Version.new(version) ! error("Invalid version syntax: " + version)
+        }
         // Find version
         if !isset(ver) {
             ver = src.get_highest_version(mask) ! {

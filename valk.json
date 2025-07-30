@@ -3,8 +3,7 @@
     "dependencies": {
         "example": {
             "src": "github.com/valk-lang/pkg-example",
-            "version": "0.0.2",
-            "update": "0.0.x"
+            "version": "0.0.2"
         }
     }
 }

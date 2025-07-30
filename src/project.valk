@@ -60,14 +60,13 @@ class Project {
             if n != pkg.name : error("Failed to add package to config. Name already used: " + name)
         }
         dep.set_string("src", pkg.name)
+        dep.set_string("version", pkg.ver.name)
 
         let mask = pkg.mask
         if isset(mask) {
-            dep.set_string("version", mask.name)
-            dep.set_string("use", pkg.ver.name)
+            dep.set_string("update", mask.name)
         } else {
-            dep.set_string("version", pkg.ver.name)
-            dep.remove("use")
+            dep.remove("update")
         }
 
         fs:write(this.config_path, this.config.encode(true)) ! error("Failed to save file: " + this.config_path)
@@ -84,11 +83,7 @@ class Project {
         each deps as dep {
             let name = dep.get("src").string()
             let v = dep.get("version").string()
-            if dep.has("use") {
-                v = dep.get("use").string()
-            } else if dep.has("lock") {
-                v = dep.get("lock").string()
-            }
+            
             if name.is_empty() : error("Valk.json invalid dependency 'src' -> '%name'")
             if v.is_empty() : error("Valk.json invalid dependency 'version' -> '%v'")
 
