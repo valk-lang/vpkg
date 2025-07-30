@@ -21,6 +21,11 @@ test: vp
 	$(vc) build debug/example.valk -o debug/example .
 	./debug/example
 
+clean:
+	rm -f ./vp
+
+.PHONY: clean
+
 
 # Build dists
 
@@ -54,3 +59,4 @@ dist-win:
 	cd ./dists/win-x64/ && tar -czf  ../vp-win-x64.tar.gz $(PACK_FILES_WIN)
 
 dist-all: dist-linux-x64 dist-macos-x64 dist-macos-arm64 dist-win
+
