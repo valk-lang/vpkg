@@ -39,7 +39,7 @@ fn cmd_use(args: Array[String], options: Array[String]) {
 
     if !is_valid_version(version) : error("Invalid version syntax: '" + version + "'")
 
-    check_vpm_versions(vv)
+    check_vp_versions(vv)
 
     if !is_installed(version) {
         // Download version

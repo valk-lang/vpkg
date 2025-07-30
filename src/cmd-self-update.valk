@@ -6,16 +6,16 @@ use valk:core
 fn self_update() {
     let vv = get_versions()
 
-    if vpm_is_up_to_date(vv) {
+    if vp_is_up_to_date(vv) {
         msg_uptodate()
         return
     }
 
     println("# Downloading latest version")
 
-    let to_path = downloads_dir() + "vpm.tar.gz"
-    let tmp_path = downloads_dir() + "vpm.tar.gz.tmp"
-    let url = cdn_host() + "/releases/vpm/vpm-" + get_os() + "-" + get_arch() + ".tar.gz"
+    let to_path = downloads_dir() + "vp.tar.gz"
+    let tmp_path = downloads_dir() + "vp.tar.gz.tmp"
+    let url = cdn_host() + "/releases/vp/vp-" + get_os() + "-" + get_arch() + ".tar.gz"
 
     // Download
     let options = http:Options {
@@ -44,7 +44,7 @@ fn self_update() {
     fs:move(tmp_path, to_path) _
 
     // Unpack
-    let vdir = vpm_dir()
+    let vdir = vp_dir()
     println("# Unpacking files to: " + vdir)
     #if OS == win
     let cmd = "tar -xzf \"" + to_path + "\" -C \"" + vdir + "\""

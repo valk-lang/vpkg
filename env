@@ -1,2 +1,2 @@
 
-export PATH=$PATH:$HOME/.vpm/bin
+export PATH=$PATH:$HOME/.vp/bin
