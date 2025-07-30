@@ -49,9 +49,9 @@ fn self_update() {
     #if OS == win
     let cmd = "tar -xzf \"" + to_path + "\" -C \"" + vdir + "\""
     cmd = cmd.replace("\\", "/")
-    core:exec(cmd) _
+    core:exec(cmd)
     #else
-    core:exec("tar -xzf \"" + to_path + "\" -C \"" + vdir + "\"") _
+    core:exec("tar -xzf \"" + to_path + "\" -C \"" + vdir + "\"")
     #end
 
     msg_uptodate()
