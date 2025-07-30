@@ -14,24 +14,24 @@ SOON
 ```
 📦 Package commands
 
- vpkg install         Install pacakages defined in the valk.json config
- vpkg install {pkg}   Install pacakage globally
- vpkg remove {pkg}    Remove pacakage
+ vp install         Install pacakages defined in the valk.json config
+ vp install {pkg}   Install pacakage globally
+ vp remove {pkg}    Remove pacakage
 
 💿 Valk version control
 
- vpkg use 0.0.1       Install valk version 0.0.1
- vpkg use latest      Install latest version
- vpkg use             Install valk version defined in project valk.json
+ vp use 0.0.1       Install valk version 0.0.1
+ vp use latest      Install latest version
+ vp use             Install valk version defined in project valk.json
                       Expected config: { "valk": "0.0.5" }
 
 🔗 Toolchain commands
 
- vpkg toolchain get {target}
+ vp toolchain get {target}
 
 ⚙️ Other
 
- vpkg self-update     Update vpkg itself
- vpkg version         Show vpkg version
- vpkg {command} -h    Show help for a command
+ vp self-update     Update vp itself
+ vp version         Show vp version
+ vp {command} -h    Show help for a command
  ```

@@ -14,6 +14,6 @@ fn warn(msg: String) {
 
 
 fn msg_uptodate() {
-    if ansi:supported() : println("# vpkg is " + "up-to-date".ansi.green())
-    else : println("# vpkg is " + "up-to-date")
+    if ansi:supported() : println("# vp is " + "up-to-date".ansi.green())
+    else : println("# vp is " + "up-to-date")
 }

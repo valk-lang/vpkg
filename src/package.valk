@@ -38,6 +38,7 @@ class Package {
             if Mask.is_mask(version) : mask = Mask.new(version)
             if !isset(mask) && version != "_" : ver = Version.new(version) ! error("Invalid version syntax: " + version)
         }
+
         // Find version
         if !isset(ver) {
             ver = src.get_highest_version(mask) ! {
