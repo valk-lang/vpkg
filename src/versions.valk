@@ -16,8 +16,8 @@ fn get_versions() Versions {
     let data = fs:read(path) !? "{}"
     let conf = json:decode(data) !? json:new_object()
 
-    let vp_latest = conf.get("valk-latest").string()
-    let valk_latest : ?String = conf.get("vp-latest").string()
+    let vp_latest = conf.get("vp-latest").string()
+    let valk_latest : ?String = conf.get("valk-latest").string()
     let last_update = conf.get("last-update").int().to(uint)
 
     if vp_latest.is_empty() : vp_latest = #STR(VERSION)
