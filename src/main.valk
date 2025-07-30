@@ -54,9 +54,9 @@ fn help(code: i32) $exit {
     print("\n")
     println(emo("⚙️", "#") + " vpkg commands");
     print("\n")
-    println(" vpkg self-update     Update vpkg itself");
-    println(" vpkg version         Show vpkg version");
-    println(" vpkg {command} -h    Show help for a command");
+    println("  vpkg self-update     Update vpkg itself");
+    println("  vpkg version         Show vpkg version");
+    println("  vpkg {command} -h    Show help for a command");
 
     print("\n")
 

@@ -64,10 +64,10 @@ class Project {
         let mask = pkg.mask
         if isset(mask) {
             dep.set_string("version", mask.name)
-            dep.set_string("lock", pkg.ver.name)
+            dep.set_string("use", pkg.ver.name)
         } else {
             dep.set_string("version", pkg.ver.name)
-            dep.remove("lock")
+            dep.remove("use")
         }
 
         fs:write(this.config_path, this.config.encode(true)) ! error("Failed to save file: " + this.config_path)
@@ -84,7 +84,9 @@ class Project {
         each deps as dep {
             let name = dep.get("src").string()
             let v = dep.get("version").string()
-            if dep.has("lock") {
+            if dep.has("use") {
+                v = dep.get("use").string()
+            } else if dep.has("lock") {
                 v = dep.get("lock").string()
             }
             if name.is_empty() : error("Valk.json invalid dependency 'src' -> '%name'")

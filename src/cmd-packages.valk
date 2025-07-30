@@ -1,25 +1,35 @@
 
 use valk:ansi
+use valk:fs
 
 fn help_intro_pkg_commands() {
     println(emo("📦", "#") + " Package commands");
     print("\n")
-    println(" vpkg install         Install pacakages defined in the valk.json config");
-    println(" vpkg install {pkg}   Install pacakage");
-    println(" vpkg remove {pkg}    Remove pacakage");
+    println("  vpkg install         Install pacakages defined in the valk.json config");
+    println("  vpkg install {pkg}   Install pacakage");
+    println("  vpkg remove {pkg}    Remove pacakage");
 }
 
 fn help_pkg_command(code: i32) $exit {
     println(emo("📦", "#") + " Package commands");
     print("\n")
-    println(" # Install pacakages defined in the valk.json config");
-    println(" vpkg install");
+    println("# Install pacakages defined in the valk.json config");
+    println("> vpkg install");
     print("\n")
-    println(" # Install a pacakage");
-    println(" vpkg install {pkg} [{version}] [{alias}]");
+    println("# Install a pacakage");
+    println("> vpkg install {pkg} [{version}] [{alias}]");
     print("\n")
-    println(" # Remove a pacakage");
-    println(" vpkg remove {pkg}");
+    println("- Example: Install latest version of a package");
+    println("> vpkg install github.com/valk-lang/pkg-example");
+    print("\n")
+    println("- Example: Install a specific version");
+    println("> vpkg install github.com/valk-lang/pkg-example 0.0.1");
+    print("\n")
+    println("- Example: Install latest version that matches 0.3.x");
+    println("> vpkg install github.com/valk-lang/pkg-example 0.3.x");
+    print("\n")
+    println("# Remove a pacakage");
+    println("> vpkg remove {pkg}");
     print("\n")
     exit(code)
 }
@@ -62,4 +72,22 @@ fn cmd_package_install(args: Array[String], options: Array[String]) {
 }
 
 fn cmd_package_remove(args: Array[String], options: Array[String]) {
+
+    if options.contains("-h") || options.contains("--help") {
+        help_pkg_command(0)
+    }
+
+    // Project
+    let p = Project.new()
+
+    let name = args.get(0) ! help_pkg_command(1)
+
+    let deps = p.config.get("dependencies")
+    if !deps.has(name) {
+        warn("Your project has no dependency called '%name'")
+        return
+    }
+
+    deps.remove(name)
+    fs:write(p.config_path, p.config.encode(true)) ! error("Failed to save file: " + p.config_path)
 }

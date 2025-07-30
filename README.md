@@ -23,7 +23,7 @@ SOON
  vpkg use 0.0.1       Install valk version 0.0.1
  vpkg use latest      Install latest version
  vpkg use             Install valk version defined in project valk.json
-                      Expected config: { "use": "0.0.3" }
+                      Expected config: { "valk": "0.0.5" }
 
 🔗 Toolchain commands
 
