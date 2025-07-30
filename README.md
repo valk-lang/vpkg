@@ -23,7 +23,7 @@ curl -s https://valk-lang.dev/install.sh | bash
  vp use 0.0.1       Install valk version 0.0.1
  vp use latest      Install latest version
  vp use             Install valk version defined in project valk.json
-                      Expected config: { "valk": "0.0.5" }
+                    Expected config: { "valk": "0.0.5" }
 
 🔗 Toolchain commands
 
