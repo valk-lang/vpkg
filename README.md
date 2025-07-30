@@ -6,7 +6,7 @@ Used for installing valk packages, compiler version control and managing toolcha
 ## Install
 
 ```
-SOON
+curl -s https://valk-lang.dev/install.sh | bash
 ```
 
 ## Usage
