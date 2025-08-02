@@ -33,9 +33,9 @@ fn main(args: Array[String]) {
 
 fn help(code: i32) $exit {
 
-    println("-------------------------------")
+    println("-----------------------")
     println("  Valk Manager " + #STR(VERSION))
-    println("-------------------------------")
+    println("-----------------------")
 
     // Packages
     print("\n")
