@@ -5,31 +5,31 @@ use valk:fs
 fn help_intro_pkg_commands() {
     println(emo("📦", "#") + " Package commands");
     print("\n")
-    println("  vp install         Install pacakages defined in the valk.json config");
-    println("  vp install {pkg}   Install pacakage");
-    println("  vp remove {pkg}    Remove pacakage");
+    println("  vman install         Install pacakages defined in the valk.json config");
+    println("  vman install {pkg}   Install pacakage");
+    println("  vman remove {pkg}    Remove pacakage");
 }
 
 fn help_pkg_command(code: i32) $exit {
     println(emo("📦", "#") + " Package commands");
     print("\n")
     println("# Install pacakages defined in the valk.json config");
-    println("> vp install");
+    println("> vman install");
     print("\n")
     println("# Install a pacakage");
-    println("> vp install {pkg} [{version}] [{alias}]");
+    println("> vman install {pkg} [{version}] [{alias}]");
     print("\n")
     println("- Example: Install latest version of a package");
-    println("> vp install github.com/valk-lang/pkg-example");
+    println("> vman install github.com/valk-lang/pkg-example");
     print("\n")
     println("- Example: Install a specific version");
-    println("> vp install github.com/valk-lang/pkg-example 0.0.1");
+    println("> vman install github.com/valk-lang/pkg-example 0.0.1");
     print("\n")
     println("- Example: Install latest version that matches 0.3.x");
-    println("> vp install github.com/valk-lang/pkg-example 0.3.x");
+    println("> vman install github.com/valk-lang/pkg-example 0.3.x");
     print("\n")
     println("# Remove a pacakage");
-    println("> vp remove {pkg}");
+    println("> vman remove {pkg}");
     print("\n")
     exit(code)
 }

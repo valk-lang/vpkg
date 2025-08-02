@@ -43,7 +43,7 @@ class Source {
         // if isset(cache_vv) : return cache_vv
         // 
         let versions = array[Version]{}
-        let data = json:new_array()
+        let data = json:array_value()
         if this.type == SRC.github {
             data = github_req("GET", "/repos/" + this.user_name + "/" + this.repo_name + "/tags") ! {
                 error("Package not found: " + this.name)

@@ -2,5 +2,5 @@
 fn help_intro_toolchain() {
     println(emo("🔗", "#") + " Toolchain commands (WIP)");
     println("");
-    println("  vp toolchain get {target}");
+    println("  vman toolchain get {target}");
 }

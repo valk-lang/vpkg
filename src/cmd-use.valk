@@ -5,9 +5,9 @@ use valk:ansi
 fn help_intro_use() {
     println(emo("💿", "#") + " Valk version control");
     println("");
-    println("  vp use 0.0.1       Install valk version 0.0.1");
-    println("  vp use latest      Install latest version");
-    println("  vp use             Install valk version defined in project valk.json");
+    println("  vman use 0.0.1       Install valk version 0.0.1");
+    println("  vman use latest      Install latest version");
+    println("  vman use             Install valk version defined in project valk.json");
     println("                     Expected config: { \"use\": \"0.0.4\" }");
 }
 
@@ -33,13 +33,13 @@ fn cmd_use(args: Array[String], options: Array[String]) {
 
     if version == "latest" {
         let valk_latest = vv.valk
-        if !isset(valk_latest) : error("vp was unable to find out what the latest valk version is")
+        if !isset(valk_latest) : error("vman was unable to find out what the latest valk version is")
         version = valk_latest
     }
 
     if !is_valid_version(version) : error("Invalid version syntax: '" + version + "'")
 
-    check_vp_versions(vv)
+    check_vman_versions(vv)
 
     if !is_installed(version) {
         // Download version

@@ -18,7 +18,7 @@ class Cache {
         let str = fs:read(path) ! error("Failed to read cache file: " + path)
         let data = json:decode(str) !? <{
             warn("Invalid json in cache")
-            return json:new_object()
+            return json:object_value()
         }
         return Cache{
             data: data
@@ -28,36 +28,4 @@ class Cache {
         let path = SELF.path()
         fs:write(path, this.data.encode(true)) ! warn("Failed to update cache: " + path)
     }
-
-    // fn get_versions(for: String) Array[Version] !none {
-    //     let src = this.data.get("packages").get(for)
-    //     if !src.has("versions") : throw none
-    //     let versions = src.get("versions")
-    //     if !versions.is_array() : throw none
-    //     let result = Array[Version].new()
-    //     each versions.array() as item, key {
-    //         let name = item.get("name").string()
-    //         let hash = item.get("hash").string()
-    //         if name.is_empty() || hash.is_empty() : continue
-    //         let v = Version.new(name) ! continue
-    //         v.hash = hash
-    //         result.push(v)
-    //     }
-    //     return result
-    // }
-    // fn set_versions(for: String, versions: Array[Version]) {
-    //     let srcs = this.data.get("packages")
-    //     let src = srcs.get(for)
-    //     let items = Array[json:Value].new()
-    //     each versions as ver {
-    //         let o = json:new_object()
-    //         o.set("name", json:new_string(ver.name))
-    //         o.set("hash", json:new_string(ver.hash))
-    //         items.push(o)
-    //     }
-    //     src.set("versions", json:new_array(items))
-    //     // srcs.set(for, src)
-    //     // this.data.set("sources", srcs)
-    //     this.save()
-    // }
 }

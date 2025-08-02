@@ -7,10 +7,10 @@ fn valk_exe() String {
     #end
 }
 
-fn vp_exe() String {
+fn vman_exe() String {
     #if OS == win
-    return "vp.exe"
+    return "vman.exe"
     #else
-    return "vp"
+    return "vman"
     #end
 }

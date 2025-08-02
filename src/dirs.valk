@@ -14,36 +14,36 @@ fn version_dir(version: String) String {
 }
 
 fn versions_dir() String {
-    let dir = vp_dir() + "versions"
+    let dir = vman_dir() + "versions"
     if !fs:is_dir(dir) : fs:mkdir(dir) ! error("Failed to create directory: " + dir)
     return dir + div()
 }
 
 fn bin_dir() String {
-    let dir = vp_dir() + "bin"
+    let dir = vman_dir() + "bin"
     if !fs:is_dir(dir) : fs:mkdir(dir) ! error("Failed to create directory: " + dir)
     return dir + div()
 }
 
-fn vp_dir() String {
+fn vman_dir() String {
     let home = fs:home_dir() !? "~"
     #if OS == win
-    let dir = home + div() + "vp"
+    let dir = home + div() + "vman"
     #else
-    let dir = home + div() + ".vp"
+    let dir = home + div() + ".vman"
     #end
     if !fs:is_dir(dir) : fs:mkdir(dir) ! error("Failed to create directory: " + dir)
     return dir + div()
 }
 
 fn downloads_dir() String {
-    let dir = vp_dir() + "downloads"
+    let dir = vman_dir() + "downloads"
     if !fs:is_dir(dir) : fs:mkdir(dir) ! error("Failed to create directory: " + dir)
     return dir + div()
 }
 
 fn cache_dir() String {
-    let dir = fs:add(vp_dir(), "cache")
+    let dir = fs:add(vman_dir(), "cache")
     if !fs:is_dir(dir) : fs:mkdir(dir) ! error("Failed to create directory: " + dir)
     return dir
 }

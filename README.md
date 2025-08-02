@@ -14,24 +14,24 @@ curl -s https://valk-lang.dev/install.sh | bash
 ```
 📦 Package commands
 
- vp install         Install pacakages defined in the valk.json config
- vp install {pkg}   Install pacakage globally
- vp remove {pkg}    Remove pacakage
+ vman install         Install pacakages defined in the valk.json config
+ vman install {pkg}   Install pacakage globally
+ vman remove {pkg}    Remove pacakage
 
 💿 Valk version control
 
- vp use 0.0.1       Install valk version 0.0.1
- vp use latest      Install latest version
- vp use             Install valk version defined in project valk.json
+ vman use 0.0.1       Install valk version 0.0.1
+ vman use latest      Install latest version
+ vman use             Install valk version defined in project valk.json
                     Expected config: { "valk": "0.0.5" }
 
 🔗 Toolchain commands
 
- vp toolchain get {target}
+ vman toolchain get {target}
 
 ⚙️ Other
 
- vp self-update     Update vp itself
- vp version         Show vp version
- vp {command} -h    Show help for a command
+ vman self-update     Update vman itself
+ vman version         Show vman version
+ vman {command} -h    Show help for a command
  ```
